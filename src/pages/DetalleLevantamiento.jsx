@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase, BUCKET_FACTURAS } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import { CATEGORIAS, ESTADOS, PRIORIDADES, etiquetaDe, colorDe } from '../lib/constants'
@@ -7,6 +7,7 @@ import Badge from '../components/Badge'
 
 export default function DetalleLevantamiento() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { session, esAdmin } = useAuth()
 
   const [item, setItem] = useState(null)
@@ -15,6 +16,7 @@ export default function DetalleLevantamiento() {
   const [perfiles, setPerfiles] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
+  const [eliminando, setEliminando] = useState(false)
 
   const [nuevoComentario, setNuevoComentario] = useState('')
   const [asignadoA, setAsignadoA] = useState('')
@@ -94,6 +96,22 @@ export default function DetalleLevantamiento() {
       .eq('id', id)
     if (!error) cargarTodo()
     else setError(error.message)
+  }
+
+  const eliminarLevantamiento = async () => {
+    const confirmado = window.confirm(
+      `¿Eliminar "${item.titulo}"? Esta acción no se puede deshacer (se borran también sus comentarios y facturas asociadas).`
+    )
+    if (!confirmado) return
+
+    setEliminando(true)
+    const { error } = await supabase.from('levantamientos').delete().eq('id', id)
+    if (error) {
+      setError(error.message)
+      setEliminando(false)
+    } else {
+      navigate('/')
+    }
   }
 
   const agregarFactura = async (e) => {
@@ -224,6 +242,11 @@ export default function DetalleLevantamiento() {
               {subiendoFactura ? 'Subiendo…' : 'Agregar factura'}
             </button>
           </form>
+
+          <hr className="separador" />
+          <button className="btn-peligro" onClick={eliminarLevantamiento} disabled={eliminando}>
+            {eliminando ? 'Eliminando…' : '🗑 Eliminar levantamiento'}
+          </button>
         </section>
       )}
 
