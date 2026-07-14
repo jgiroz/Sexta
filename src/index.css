@@ -152,3 +152,49 @@ button:disabled { opacity: 0.6; cursor: default; }
   font-size: 0.85rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
+
+.separador { border: none; border-top: 1px solid var(--borde); margin: 0.5rem 0; }
+.btn-peligro {
+  background: #fdecea;
+  color: var(--rojo-oscuro);
+  border: 1px solid var(--rojo-oscuro);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-peligro:hover { background: var(--rojo-oscuro); color: white; }
+
+.btn-instalar {
+  background: white;
+  color: var(--rojo);
+  border: none;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-instalar:hover { background: #f1f1f1; }
+
+.modal-fondo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+.modal-caja {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 360px;
+  width: 100%;
+}
+.modal-caja h3 { margin-top: 0; }
+.modal-pasos { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem; }
+.modal-caja .btn-primario { width: 100%; margin-top: 1.25rem; }
