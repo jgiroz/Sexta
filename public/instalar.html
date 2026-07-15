@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Instalar app - Cuartel de Bomberos</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root { --rojo: #c0392b; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f5f6f8;
+    color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .hoja {
+    background: white;
+    max-width: 420px;
+    width: 100%;
+    border-radius: 14px;
+    padding: 2rem 1.75rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  }
+  h1 { color: var(--rojo); font-size: 1.4rem; margin-top: 0; text-align: center; }
+  .paso-url { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .paso-url label { font-size: 0.85rem; font-weight: 600; }
+  .paso-url input {
+    padding: 0.6rem 0.7rem;
+    border: 1px solid #dcdfe3;
+    border-radius: 8px;
+    font-size: 0.95rem;
+  }
+  .paso-url button {
+    background: var(--rojo);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  #resultado { display: none; text-align: center; }
+  #qrcode { display: flex; justify-content: center; margin: 1.25rem 0; }
+  #qrcode img { border-radius: 8px; }
+  ol { text-align: left; font-size: 0.95rem; line-height: 1.5; padding-left: 1.2rem; }
+  .link-directo { word-break: break-all; font-size: 0.85rem; color: #7f8c8d; margin-top: 0.5rem; }
+  .btn-imprimir {
+    margin-top: 1.5rem;
+    width: 100%;
+    background: #ecf0f1;
+    color: #2c3e50;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  @media print {
+    body { background: white; }
+    .paso-url, .btn-imprimir { display: none !important; }
+    .hoja { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="hoja">
+    <h1>🚒 Instalar app del Cuartel</h1>
+
+    <div class="paso-url">
+      <label for="url">Pega aquí la URL de la app (una sola vez):</label>
+      <input id="url" type="text" placeholder="https://sexta.tuusuario.workers.dev" />
+      <button onclick="generar()">Generar QR e instrucciones</button>
+    </div>
+
+    <div id="resultado">
+      <div id="qrcode"></div>
+      <p>Escanea el código con la cámara del celular, o comparte este link:</p>
+      <p class="link-directo" id="linkTexto"></p>
+
+      <ol>
+        <li><strong>Android (Chrome):</strong> abre el link → menú ⋮ → "Instalar app".</li>
+        <li><strong>iPhone (Safari):</strong> abre el link → botón Compartir → "Agregar a inicio".</li>
+      </ol>
+
+      <button class="btn-imprimir" onclick="window.print()">Imprimir / Guardar como PDF</button>
+    </div>
+  </div>
+
+  <script>
+    function generar() {
+      const url = document.getElementById('url').value.trim()
+      if (!url) return
+      document.getElementById('qrcode').innerHTML = ''
+      new QRCode(document.getElementById('qrcode'), { text: url, width: 200, height: 200 })
+      document.getElementById('linkTexto').textContent = url
+      document.getElementById('resultado').style.display = 'block'
+    }
+  </script>
+</body>
+</html>
