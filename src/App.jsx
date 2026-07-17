@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import NavBar from './components/NavBar'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -5,6 +6,8 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import NuevoLevantamiento from './pages/NuevoLevantamiento'
 import DetalleLevantamiento from './pages/DetalleLevantamiento'
+
+const Dashboard = lazy(() => import('./pages/Dashboard'))
 
 export default function App() {
   return (
@@ -33,6 +36,16 @@ export default function App() {
           element={
             <ProtectedRoute>
               <DetalleLevantamiento />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<div className="pagina cargando">Cargando…</div>}>
+                <Dashboard />
+              </Suspense>
             </ProtectedRoute>
           }
         />

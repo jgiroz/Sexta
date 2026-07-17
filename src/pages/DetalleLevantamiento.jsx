@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase, BUCKET_FACTURAS } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { CATEGORIAS, ESTADOS, PRIORIDADES, etiquetaDe, colorDe } from '../lib/constants'
+import { CATEGORIAS, SUBCATEGORIAS_CARRO, ESTADOS, PRIORIDADES, etiquetaDe, colorDe } from '../lib/constants'
 import Badge from '../components/Badge'
 
 export default function DetalleLevantamiento() {
@@ -34,7 +34,7 @@ export default function DetalleLevantamiento() {
       supabase
         .from('levantamientos')
         .select(
-          'id, titulo, descripcion, categoria, estado, prioridad, ubicacion, foto_url, creado_at, carro_id, asignado_a, reportado_por, carros(codigo, nombre), reportante:profiles!levantamientos_reportado_por_fkey(nombre_completo), responsable:profiles!levantamientos_asignado_a_fkey(nombre_completo)'
+          'id, titulo, descripcion, categoria, subcategoria, estado, prioridad, ubicacion, foto_url, creado_at, carro_id, asignado_a, reportado_por, carros(codigo, nombre), reportante:profiles!levantamientos_reportado_por_fkey(nombre_completo), responsable:profiles!levantamientos_asignado_a_fkey(nombre_completo)'
         )
         .eq('id', id)
         .single(),
@@ -166,6 +166,9 @@ export default function DetalleLevantamiento() {
         <Badge texto={etiquetaDe(ESTADOS, item.estado)} color={colorDe(ESTADOS, item.estado)} />
         <Badge texto={etiquetaDe(PRIORIDADES, item.prioridad)} color={colorDe(PRIORIDADES, item.prioridad)} />
         <Badge texto={etiquetaDe(CATEGORIAS, item.categoria)} color="#34495e" />
+        {item.subcategoria && (
+          <Badge texto={etiquetaDe(SUBCATEGORIAS_CARRO, item.subcategoria)} color="#16a085" />
+        )}
         {item.carros?.codigo && <Badge texto={item.carros.codigo} color="#2c3e50" />}
       </div>
 

@@ -13,6 +13,7 @@ create extension if not exists "pgcrypto";
 create type rol_usuario as enum ('admin', 'usuario');
 create type tipo_personal as enum ('voluntario', 'cuartelero', 'oficial');
 create type categoria_levantamiento as enum ('infraestructura', 'carro', 'material_menor', 'material_motorizado', 'epp', 'otro');
+create type subcategoria_carro as enum ('material_menor', 'material_motorizado');
 create type estado_levantamiento as enum ('pendiente', 'asignado', 'en_progreso', 'resuelto', 'cerrado');
 create type prioridad_levantamiento as enum ('baja', 'media', 'alta', 'urgente');
 
@@ -61,6 +62,7 @@ create table levantamientos (
   titulo text not null,
   descripcion text not null,
   categoria categoria_levantamiento not null default 'otro',
+  subcategoria subcategoria_carro,
   carro_id uuid references carros(id) on delete set null,
   ubicacion text,
   foto_url text,

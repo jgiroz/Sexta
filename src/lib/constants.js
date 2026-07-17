@@ -1,10 +1,13 @@
 export const CATEGORIAS = [
-  { value: 'infraestructura', label: 'Infraestructura' },
+  { value: 'infraestructura', label: 'Cuartel' },
   { value: 'carro', label: 'Carro bomba' },
-  { value: 'material_menor', label: 'Material menor' },
-  { value: 'material_motorizado', label: 'Material motorizado' },
   { value: 'epp', label: 'EPP' },
   { value: 'otro', label: 'Otro' }
+]
+
+export const SUBCATEGORIAS_CARRO = [
+  { value: 'material_menor', label: 'Material menor' },
+  { value: 'material_motorizado', label: 'Material motorizado' }
 ]
 
 export const ESTADOS = [

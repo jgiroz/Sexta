@@ -14,12 +14,18 @@ export default function NavBar() {
   return (
     <header className="navbar">
       <Link to={session ? '/' : '/login'} className="navbar-brand">
-        🚒 Cuartel
+        <img src="/navbar-logo.png" alt="Sexta Compañía" className="navbar-logo" />
+        Cuartel
       </Link>
       <div className="navbar-right">
         <InstallButton />
         {session && (
           <>
+            {esAdmin && (
+              <Link to="/dashboard" className="btn-link navbar-panel-link">
+                📊 Panel
+              </Link>
+            )}
             <span className="navbar-user">
               {profile?.nombre_completo ?? session.user.email}
               {esAdmin && <span className="chip-admin">admin</span>}
