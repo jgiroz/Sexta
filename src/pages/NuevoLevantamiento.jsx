@@ -162,7 +162,7 @@ export default function NuevoLevantamiento() {
             <option value="">{esCarro ? '— Selecciona el carro —' : '— No aplica —'}</option>
             {carros.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.codigo} — {c.nombre}
+                {c.nombre ? `${c.codigo} — ${c.nombre}` : c.codigo}
               </option>
             ))}
           </select>
