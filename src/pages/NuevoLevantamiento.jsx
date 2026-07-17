@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase, BUCKET_FOTOS } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
@@ -20,6 +20,8 @@ export default function NuevoLevantamiento() {
   const [enviando, setEnviando] = useState(false)
   const [comprimiendo, setComprimiendo] = useState(false)
   const [error, setError] = useState('')
+  const inputCamaraRef = useRef(null)
+  const inputGaleriaRef = useRef(null)
 
   const esCarro = categoria === 'carro'
 
@@ -190,7 +192,38 @@ export default function NuevoLevantamiento() {
 
         <label>
           Foto (opcional)
-          <input type="file" accept="image/*" onChange={elegirFoto} />
+          <div className="botones-foto">
+            <button
+              type="button"
+              className="btn-secundario"
+              onClick={() => inputCamaraRef.current?.click()}
+            >
+              📷 Tomar foto
+            </button>
+            <button
+              type="button"
+              className="btn-secundario"
+              onClick={() => inputGaleriaRef.current?.click()}
+            >
+              🖼️ Elegir de galería
+            </button>
+          </div>
+          <input
+            ref={inputCamaraRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={elegirFoto}
+            style={{ display: 'none' }}
+          />
+          <input
+            ref={inputGaleriaRef}
+            type="file"
+            accept="image/*"
+            onChange={elegirFoto}
+            style={{ display: 'none' }}
+          />
+          {foto && <p className="muted-chico">Seleccionada: {foto.name}</p>}
         </label>
         {comprimiendo && <p className="muted-chico">Optimizando imagen…</p>}
 
