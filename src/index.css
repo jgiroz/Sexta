@@ -74,6 +74,9 @@ a { color: var(--rojo); text-decoration: none; }
 .form-inline { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
 .form-inline input { flex: 1; padding: 0.6rem 0.7rem; border-radius: 8px; border: 1px solid var(--borde); }
 
+.botones-foto { display: flex; gap: 0.5rem; margin-top: 0.3rem; }
+.botones-foto .btn-secundario { flex: 1; padding: 0.6rem 0.5rem; font-size: 0.85rem; }
+
 .btn-primario, .btn-secundario, .btn-link {
   border: none;
   border-radius: 8px;
