@@ -6,8 +6,14 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import NuevoLevantamiento from './pages/NuevoLevantamiento'
 import DetalleLevantamiento from './pages/DetalleLevantamiento'
+import MisTareas from './pages/MisTareas'
 
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const ReporteDiario = lazy(() => import('./pages/ReporteDiario'))
+const GestionUsuarios = lazy(() => import('./pages/GestionUsuarios'))
+const ConfiguracionCorreos = lazy(() => import('./pages/ConfiguracionCorreos'))
+
+const Cargando = () => <div className="pagina cargando">Cargando…</div>
 
 export default function App() {
   return (
@@ -40,11 +46,49 @@ export default function App() {
           }
         />
         <Route
+          path="/mis-tareas"
+          element={
+            <ProtectedRoute>
+              <MisTareas />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reporte-diario/:tipo"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<Cargando />}>
+                <ReporteDiario />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Suspense fallback={<div className="pagina cargando">Cargando…</div>}>
+              <Suspense fallback={<Cargando />}>
                 <Dashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/usuarios"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<Cargando />}>
+                <GestionUsuarios />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/correos"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<Cargando />}>
+                <ConfiguracionCorreos />
               </Suspense>
             </ProtectedRoute>
           }

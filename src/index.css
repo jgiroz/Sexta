@@ -42,6 +42,27 @@ a { color: var(--rojo); text-decoration: none; }
 
 .pagina { max-width: 640px; margin: 0 auto; padding: 1rem; padding-bottom: 3rem; }
 .pagina-header { display: flex; align-items: center; justify-content: space-between; }
+.pagina-ancha { max-width: 1400px; }
+
+.botones-inicio-simple {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.tarjeta-boton-grande {
+  display: block;
+  background: white;
+  color: var(--texto);
+  border-radius: 12px;
+  padding: 1.5rem 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid var(--borde);
+}
+.tarjeta-boton-grande:hover { border-color: var(--rojo); color: var(--rojo); }
 
 .pantalla-centrada {
   min-height: 100vh;
@@ -115,21 +136,24 @@ button:disabled { opacity: 0.6; cursor: default; }
 
 .subtitulo-seccion { margin: 1.25rem 0 0.5rem; font-size: 1rem; color: var(--texto); }
 
-.tabla-envoltorio { overflow-x: auto; margin-top: 0.5rem; }
+.tabla-envoltorio { overflow-x: auto; margin-top: 0.5rem; width: 100%; }
 .tabla-levantamientos {
   width: 100%;
   border-collapse: collapse;
   background: white;
   border-radius: 10px;
   overflow: hidden;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  table-layout: auto;
 }
 .tabla-levantamientos th, .tabla-levantamientos td {
-  padding: 0.55rem 0.75rem;
+  padding: 0.7rem 1rem;
   border-bottom: 1px solid var(--borde);
   text-align: left;
   white-space: nowrap;
 }
+.pagina-ancha .tabla-levantamientos { font-size: 0.95rem; }
+.pagina-ancha .tabla-levantamientos th, .pagina-ancha .tabla-levantamientos td { padding: 0.85rem 1.1rem; }
 .tabla-levantamientos th {
   background: #f5f6f8;
   font-size: 0.75rem;

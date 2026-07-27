@@ -19,10 +19,37 @@ function usePantallaAncha(minWidth = 900) {
   return ancha
 }
 
+function InicioSimple({ esCuartelero, profile }) {
+  return (
+    <div className="pagina">
+      <h2>Hola, {profile?.nombre_completo?.split(' ')[0] ?? ''}</h2>
+      <div className="botones-inicio-simple">
+        <Link to="/nuevo" className="tarjeta-boton-grande">
+          🧯 Levantamiento de problema
+        </Link>
+        {esCuartelero ? (
+          <>
+            <Link to="/reporte-diario/material_mayor" className="tarjeta-boton-grande">
+              📋 Reporte diario material mayor
+            </Link>
+            <Link to="/reporte-diario/equipos_motorizados" className="tarjeta-boton-grande">
+              🔧 Reporte diario equipos motorizados
+            </Link>
+          </>
+        ) : (
+          <Link to="/mis-tareas" className="tarjeta-boton-grande">
+            📌 Pendientes asignados
+          </Link>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
-  const { session, esAdmin } = useAuth()
+  const { session, profile, puedeGestionar, esVoluntario, esCuartelero } = useAuth()
   const pantallaAncha = usePantallaAncha(900)
-  const vistaTabla = esAdmin && pantallaAncha
+  const vistaTabla = puedeGestionar && pantallaAncha
 
   const [levantamientos, setLevantamientos] = useState([])
   const [carros, setCarros] = useState([])
@@ -32,7 +59,10 @@ export default function Home() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
 
+  const vistaSimple = esVoluntario || esCuartelero
+
   const cargar = useCallback(async () => {
+    if (vistaSimple) return
     setCargando(true)
     let query = supabase
       .from('levantamientos')
@@ -48,29 +78,30 @@ export default function Home() {
     if (error) setError(error.message)
     else setLevantamientos(data ?? [])
     setCargando(false)
-  }, [filtroEstado, filtroCarro])
+  }, [filtroEstado, filtroCarro, vistaSimple])
 
   useEffect(() => {
     cargar()
   }, [cargar])
 
   useEffect(() => {
+    if (vistaSimple) return
     supabase
       .from('carros')
       .select('id, codigo, nombre')
       .eq('activo', true)
       .then(({ data }) => setCarros(data ?? []))
-  }, [])
+  }, [vistaSimple])
 
   useEffect(() => {
-    if (esAdmin) {
+    if (puedeGestionar) {
       supabase
         .from('profiles')
         .select('id, nombre_completo')
         .eq('activo', true)
         .then(({ data }) => setPerfiles(data ?? []))
     }
-  }, [esAdmin])
+  }, [puedeGestionar])
 
   const actualizarEstado = async (id, estado) => {
     const { error } = await supabase.from('levantamientos').update({ estado }).eq('id', id)
@@ -85,6 +116,10 @@ export default function Home() {
       .eq('id', id)
     if (!error) cargar()
     else setError(error.message)
+  }
+
+  if (vistaSimple) {
+    return <InicioSimple esCuartelero={esCuartelero} profile={profile} />
   }
 
   const misAsignados = levantamientos.filter((l) => l.asignado_a === session?.user?.id)
@@ -107,7 +142,7 @@ export default function Home() {
   )
 
   return (
-    <div className="pagina">
+    <div className={vistaTabla ? 'pagina pagina-ancha' : 'pagina'}>
       <div className="pagina-header">
         <h2>Levantamientos</h2>
         <Link to="/nuevo" className="btn-primario btn-fab-like">

@@ -8,7 +8,7 @@ import Badge from '../components/Badge'
 export default function DetalleLevantamiento() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { session, esAdmin } = useAuth()
+  const { session, puedeGestionar } = useAuth()
 
   const [item, setItem] = useState(null)
   const [comentarios, setComentarios] = useState([])
@@ -66,14 +66,14 @@ export default function DetalleLevantamiento() {
   }, [cargarTodo])
 
   useEffect(() => {
-    if (esAdmin) {
+    if (puedeGestionar) {
       supabase
         .from('profiles')
         .select('id, nombre_completo')
         .eq('activo', true)
         .then(({ data }) => setPerfiles(data ?? []))
     }
-  }, [esAdmin])
+  }, [puedeGestionar])
 
   const enviarComentario = async (e) => {
     e.preventDefault()
@@ -184,9 +184,9 @@ export default function DetalleLevantamiento() {
         Responsable asignado: {item.responsable?.nombre_completo ?? 'Sin asignar'}
       </p>
 
-      {esAdmin && (
+      {puedeGestionar && (
         <section className="seccion-admin">
-          <h3>Gestión (admin)</h3>
+          <h3>Gestión</h3>
           <label>
             Asignar responsable
             <select value={asignadoA} onChange={(e) => setAsignadoA(e.target.value)}>

@@ -47,9 +47,9 @@ create table carros (
   id uuid primary key default gen_random_uuid(),
   cuartel_id uuid references cuarteles(id) on delete set null,
   codigo text not null,          -- B6, RX6, R6, M6...
-  nombre text,                    -- ej "Bomba 6"
+  nombre text,                    -- opcional, se completa después si se necesita
   patente text,
-  tipo text,                      -- bomba, rescate, multipropósito, etc.
+  tipo text,                      -- opcional
   activo boolean not null default true,
   creado_at timestamptz not null default now()
 );
@@ -125,7 +125,7 @@ begin
   end if;
   return new;
 end;
-$$ language plpgsql;
+$$ language plpgsql security definer;
 
 create trigger trg_levantamiento_actualizado
 before update on levantamientos
@@ -166,6 +166,16 @@ returns boolean as $$
   );
 $$ language sql security definer stable;
 
+-- Función auxiliar: admin U oficiales (mismos permisos operativos que admin,
+-- sin gestión de usuarios ni catálogo de carros).
+create or replace function fn_puede_gestionar()
+returns boolean as $$
+  select exists (
+    select 1 from profiles
+    where id = auth.uid() and (rol = 'admin' or tipo = 'oficial')
+  );
+$$ language sql security definer stable;
+
 -- PROFILES: todos los autenticados pueden leer (para asignar responsables);
 -- solo el propio usuario o un admin puede editar.
 create policy "profiles_select_auth" on profiles for select
@@ -190,10 +200,10 @@ create policy "levantamientos_select_auth" on levantamientos for select
   using (auth.role() = 'authenticated');
 create policy "levantamientos_insert_auth" on levantamientos for insert
   with check (auth.role() = 'authenticated' and reportado_por = auth.uid());
-create policy "levantamientos_update_admin_o_creador" on levantamientos for update
-  using (fn_es_admin() or reportado_por = auth.uid());
-create policy "levantamientos_delete_admin" on levantamientos for delete
-  using (fn_es_admin());
+create policy "levantamientos_update_gestor_o_creador" on levantamientos for update
+  using (fn_puede_gestionar() or reportado_por = auth.uid());
+create policy "levantamientos_delete_gestor" on levantamientos for delete
+  using (fn_puede_gestionar());
 
 -- HISTORIAL: lectura para todos, solo el sistema (trigger) inserta.
 create policy "historial_select_auth" on historial_estados for select
@@ -202,8 +212,8 @@ create policy "historial_select_auth" on historial_estados for select
 -- FACTURAS: lectura para todos, solo admin sube/edita/borra.
 create policy "facturas_select_auth" on facturas for select
   using (auth.role() = 'authenticated');
-create policy "facturas_write_admin" on facturas for all
-  using (fn_es_admin()) with check (fn_es_admin());
+create policy "facturas_write_gestor" on facturas for all
+  using (fn_puede_gestionar()) with check (fn_puede_gestionar());
 
 -- COMENTARIOS: lectura y creación para todos los autenticados.
 create policy "comentarios_select_auth" on comentarios for select
@@ -211,19 +221,52 @@ create policy "comentarios_select_auth" on comentarios for select
 create policy "comentarios_insert_auth" on comentarios for insert
   with check (auth.role() = 'authenticated' and autor_id = auth.uid());
 
+-- ------------------------------------------------------------
+-- REPORTES DIARIOS (cuarteleros) - material mayor / equipos motorizados
+-- ------------------------------------------------------------
+create type tipo_reporte_diario as enum ('material_mayor', 'equipos_motorizados');
+
+create table reportes_diarios (
+  id uuid primary key default gen_random_uuid(),
+  tipo tipo_reporte_diario not null,
+  autor_id uuid not null references profiles(id),
+  contenido text,
+  creado_at timestamptz not null default now()
+);
+
+alter table reportes_diarios enable row level security;
+
+create policy "reportes_select_propio_o_gestor" on reportes_diarios for select
+  using (autor_id = auth.uid() or fn_puede_gestionar());
+create policy "reportes_insert_propio" on reportes_diarios for insert
+  with check (autor_id = auth.uid());
+
+-- ------------------------------------------------------------
+-- CONFIGURACIÓN DE CORREOS por categoría / carro (solo admin)
+-- ------------------------------------------------------------
+create table notificaciones_email (
+  id uuid primary key default gen_random_uuid(),
+  categoria categoria_levantamiento not null,
+  carro_id uuid references carros(id) on delete cascade,
+  email text not null,
+  creado_at timestamptz not null default now()
+);
+
+alter table notificaciones_email enable row level security;
+
+create policy "notificaciones_select_admin" on notificaciones_email for select
+  using (fn_es_admin());
+create policy "notificaciones_write_admin" on notificaciones_email for all
+  using (fn_es_admin()) with check (fn_es_admin());
+
 -- ============================================================
 -- DATOS SEMILLA (ajustar a la realidad del cuartel)
 -- ============================================================
 insert into cuarteles (nombre) values ('Cuartel Principal');
 
-insert into carros (cuartel_id, codigo, nombre, tipo)
-select id, codigo, nombre, tipo from (
-  select
-    (select id from cuarteles limit 1) as id,
-    unnest(array['B6','RX6','R6','M6']) as codigo,
-    unnest(array['Bomba 6','Rescate 6','Rescate 6 (liviano)','Municiones/Materiales 6']) as nombre,
-    unnest(array['Bomba','Rescate','Rescate','Logístico']) as tipo
-) t;
+insert into carros (cuartel_id, codigo)
+select (select id from cuarteles limit 1), codigo
+from unnest(array['B6','RX6','R6','M6']) as codigo;
 
 -- Storage: crear buckets desde el panel de Supabase (o vía API):
 --   levantamientos-fotos   (público de lectura, subida solo autenticados)

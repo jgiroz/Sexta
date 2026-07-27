@@ -28,7 +28,7 @@ function nombreMes(clave) {
 }
 
 export default function Dashboard() {
-  const { esAdmin } = useAuth()
+  const { puedeGestionar } = useAuth()
   const [datos, setDatos] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
@@ -81,7 +81,7 @@ export default function Dashboard() {
     return [...mapa.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10)
   }, [datos])
 
-  if (!esAdmin) return <Navigate to="/" replace />
+  if (!puedeGestionar) return <Navigate to="/" replace />
   if (cargando) return <div className="pagina cargando">Cargando…</div>
 
   return (

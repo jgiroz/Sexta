@@ -63,10 +63,6 @@ export default function NuevoLevantamiento() {
       setError('Selecciona el carro cuando la categoría es "Carro bomba".')
       return
     }
-    if (esCarro && !subcategoria) {
-      setError('Selecciona si es material menor o material motorizado.')
-      return
-    }
 
     setEnviando(true)
     try {
@@ -89,7 +85,7 @@ export default function NuevoLevantamiento() {
           titulo,
           descripcion,
           categoria,
-          subcategoria: esCarro ? subcategoria : null,
+          subcategoria: esCarro && subcategoria ? subcategoria : null,
           carro_id: carroId || null,
           ubicacion,
           prioridad,
@@ -144,20 +140,6 @@ export default function NuevoLevantamiento() {
           </select>
         </label>
 
-        {esCarro && (
-          <label>
-            Tipo de material
-            <select value={subcategoria} onChange={(e) => setSubcategoria(e.target.value)} required>
-              <option value="">— Selecciona —</option>
-              {SUBCATEGORIAS_CARRO.map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
         <label>
           {esCarro ? 'Carro' : 'Carro relacionado (opcional)'}
           <select value={carroId} onChange={(e) => setCarroId(e.target.value)}>
@@ -169,6 +151,20 @@ export default function NuevoLevantamiento() {
             ))}
           </select>
         </label>
+
+        {esCarro && (
+          <label>
+            Tipo de material (opcional)
+            <select value={subcategoria} onChange={(e) => setSubcategoria(e.target.value)}>
+              <option value="">— No aplica (problema del carro en general) —</option>
+              {SUBCATEGORIAS_CARRO.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
 
         <label>
           Prioridad
