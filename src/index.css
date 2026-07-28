@@ -113,6 +113,7 @@ a { color: var(--rojo); text-decoration: none; }
 .btn-secundario { background: #ecf0f1; color: var(--texto); }
 .btn-link { background: transparent; color: var(--rojo); padding: 0.4rem; }
 .btn-fab-like { padding: 0.5rem 0.9rem; font-size: 0.9rem; }
+.btn-ancho-completo { width: 100%; margin-top: 1.25rem; }
 button:disabled { opacity: 0.6; cursor: default; }
 
 .filtros { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0 1rem; }
