@@ -18,6 +18,10 @@ export const ESTADOS = [
   { value: 'cerrado', label: 'Cerrado', color: '#7f8c8d' }
 ]
 
+// Estados que se consideran "terminados". Se usan para ocultar el
+// historial por defecto en las listas.
+export const ESTADOS_CERRADOS = ['resuelto', 'cerrado']
+
 export const PRIORIDADES = [
   { value: 'baja', label: 'Baja', color: '#95a5a6' },
   { value: 'media', label: 'Media', color: '#f1c40f' },
