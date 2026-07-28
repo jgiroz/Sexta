@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { ESTADOS, PRIORIDADES, etiquetaDe, colorDe } from '../lib/constants'
+import { ESTADOS, ESTADOS_CERRADOS, PRIORIDADES, etiquetaDe, colorDe } from '../lib/constants'
 import Badge from '../components/Badge'
 
 function usePantallaAncha(minWidth = 900) {
@@ -54,7 +54,9 @@ export default function Home() {
   const [levantamientos, setLevantamientos] = useState([])
   const [carros, setCarros] = useState([])
   const [perfiles, setPerfiles] = useState([])
-  const [filtroEstado, setFiltroEstado] = useState('todos')
+  // Por defecto se muestran solo los abiertos (todo lo que no está
+  // resuelto ni cerrado), para que la lista no se llene de historial.
+  const [filtroEstado, setFiltroEstado] = useState('abiertos')
   const [filtroCarro, setFiltroCarro] = useState('todos')
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
@@ -71,7 +73,11 @@ export default function Home() {
       )
       .order('creado_at', { ascending: false })
 
-    if (filtroEstado !== 'todos') query = query.eq('estado', filtroEstado)
+    if (filtroEstado === 'abiertos') {
+      query = query.not('estado', 'in', `(${ESTADOS_CERRADOS.join(',')})`)
+    } else if (filtroEstado !== 'todos') {
+      query = query.eq('estado', filtroEstado)
+    }
     if (filtroCarro !== 'todos') query = query.eq('carro_id', filtroCarro)
 
     const { data, error } = await query
@@ -152,6 +158,12 @@ export default function Home() {
 
       <div className="filtros">
         <button
+          className={`chip-filtro ${filtroEstado === 'abiertos' ? 'activo' : ''}`}
+          onClick={() => setFiltroEstado('abiertos')}
+        >
+          Abiertos
+        </button>
+        <button
           className={`chip-filtro ${filtroEstado === 'todos' ? 'activo' : ''}`}
           onClick={() => setFiltroEstado('todos')}
         >
@@ -184,7 +196,11 @@ export default function Home() {
       {cargando && <p className="cargando">Cargando…</p>}
 
       {!cargando && levantamientos.length === 0 && (
-        <p className="vacio">No hay levantamientos con este filtro.</p>
+        <p className="vacio">
+          {filtroEstado === 'abiertos'
+            ? 'No hay levantamientos abiertos. 🎉'
+            : 'No hay levantamientos con este filtro.'}
+        </p>
       )}
 
       {!cargando && levantamientos.length > 0 && vistaTabla && (
