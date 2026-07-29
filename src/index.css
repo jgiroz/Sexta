@@ -284,3 +284,80 @@ button:disabled { opacity: 0.6; cursor: default; }
   text-align: left;
 }
 .tabla-simple th { color: #7f8c8d; font-size: 0.75rem; text-transform: uppercase; }
+
+/* --- Formulario de reporte: checklist OK / FALLA --- */
+.fila-doble { display: flex; gap: 0.75rem; }
+.fila-doble label { flex: 1; }
+
+.item-checklist {
+  background: white;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.item-checklist.con-falla { border-color: var(--rojo); background: #fdf3f2; }
+.item-checklist-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.item-checklist-nombre { font-weight: 600; font-size: 0.95rem; }
+.item-checklist-botones { display: flex; gap: 0.4rem; flex-shrink: 0; }
+.chip-estado {
+  border: 1px solid var(--borde);
+  background: white;
+  color: #7f8c8d;
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.chip-estado.ok-activo { background: #27ae60; border-color: #27ae60; color: white; }
+.chip-estado.falla-activo { background: var(--rojo); border-color: var(--rojo); color: white; }
+.item-checklist-descripcion {
+  font-size: 0.95rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--rojo);
+  font-family: inherit;
+  width: 100%;
+}
+
+.aviso-atencion {
+  background: #fef5e7;
+  color: #a04000;
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* --- Filtros de fecha en horómetros --- */
+.filtros-fecha { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: flex-end; margin: 0.75rem 0; }
+.filtros-fecha label { display: flex; flex-direction: column; font-size: 0.75rem; font-weight: 600; gap: 0.25rem; }
+.filtros-fecha input, .filtros-fecha select {
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.pestanas { display: flex; gap: 0.4rem; margin: 1rem 0 0.5rem; }
+.pestana {
+  flex: 1;
+  border: 1px solid var(--borde);
+  background: white;
+  border-radius: 8px;
+  padding: 0.6rem 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--texto);
+}
+.pestana.activa { background: var(--rojo); border-color: var(--rojo); color: white; }

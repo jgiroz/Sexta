@@ -10,6 +10,8 @@ import MisTareas from './pages/MisTareas'
 
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const ReporteDiario = lazy(() => import('./pages/ReporteDiario'))
+const ReporteMaterialMayor = lazy(() => import('./pages/ReporteMaterialMayor'))
+const RevisarObservaciones = lazy(() => import('./pages/RevisarObservaciones'))
 const GestionUsuarios = lazy(() => import('./pages/GestionUsuarios'))
 const ConfiguracionCorreos = lazy(() => import('./pages/ConfiguracionCorreos'))
 
@@ -54,11 +56,31 @@ export default function App() {
           }
         />
         <Route
+          path="/reporte-diario/material_mayor"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<Cargando />}>
+                <ReporteMaterialMayor />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/reporte-diario/:tipo"
           element={
             <ProtectedRoute>
               <Suspense fallback={<Cargando />}>
                 <ReporteDiario />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/observaciones"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<Cargando />}>
+                <RevisarObservaciones />
               </Suspense>
             </ProtectedRoute>
           }
