@@ -9,6 +9,16 @@ const TIPOS_REPORTE = [
   { value: 'equipos_motorizados', label: 'Equipos motorizados' }
 ]
 
+// Dominios que no existen en internet (las cuentas internas de cuartelero).
+// Deben coincidir con el filtro de la Edge Function.
+const DOMINIOS_INTERNOS = ['.local', '.invalid', '.test', '.example']
+
+function esCorreoEntregable(correo) {
+  const limpio = (correo ?? '').trim().toLowerCase()
+  if (!limpio.includes('@')) return false
+  return !DOMINIOS_INTERNOS.some((d) => limpio.endsWith(d))
+}
+
 export default function ConfiguracionCorreos() {
   const { esAdmin } = useAuth()
   const [filas, setFilas] = useState([])
@@ -48,6 +58,16 @@ export default function ConfiguracionCorreos() {
   const agregar = async (e) => {
     e.preventDefault()
     if (!email.trim()) return
+
+    if (!esCorreoEntregable(email)) {
+      setError(
+        'Esa dirección no puede recibir correos. Las cuentas internas (por ejemplo ' +
+          'l6@sexta.local) no existen en internet. Usa un correo real; si es para avisarle a ' +
+          'un cuartelero, cárgalo en su ficha en la página Usuarios, campo "Correo de contacto".'
+      )
+      return
+    }
+
     setGuardando(true)
     setError('')
 

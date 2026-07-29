@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { supabase, BUCKET_FOTOS } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import { CATEGORIAS, SUBCATEGORIAS_CARRO } from '../lib/constants'
@@ -106,6 +106,9 @@ export default function NuevoLevantamiento() {
 
   return (
     <div className="pagina">
+      <Link to="/" className="btn-link">
+        ← Volver
+      </Link>
       <h2>Nuevo levantamiento</h2>
       <form onSubmit={enviar} className="form">
         <label>
