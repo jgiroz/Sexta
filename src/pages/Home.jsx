@@ -35,6 +35,9 @@ function InicioSimple({ esCuartelero, profile }) {
             <Link to="/reporte-diario/equipos_motorizados" className="tarjeta-boton-grande">
               🔧 Reporte diario equipos motorizados
             </Link>
+            <Link to="/observaciones" className="tarjeta-boton-grande">
+              🔎 Revisar observaciones
+            </Link>
           </>
         ) : (
           <Link to="/mis-tareas" className="tarjeta-boton-grande">
