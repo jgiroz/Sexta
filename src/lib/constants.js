@@ -29,6 +29,22 @@ export const PRIORIDADES = [
   { value: 'urgente', label: 'Urgente', color: '#c0392b' }
 ]
 
+// Ítems del checklist de material mayor.
+// Para agregar o quitar ítems más adelante, basta editar esta lista:
+// los reportes antiguos conservan lo que se guardó en su momento.
+export const ITEMS_MATERIAL_MAYOR = [
+  { clave: 'motor', etiqueta: 'Motor' },
+  { clave: 'alarma', etiqueta: 'Sistema de alarma' },
+  { clave: 'luces', etiqueta: 'Luces' },
+  { clave: 'electrico', etiqueta: 'Eléctrico' },
+  { clave: 'cuerpo_bomba', etiqueta: 'Cuerpo bomba' }
+]
+
+export const TIPOS_REPORTE = [
+  { value: 'material_mayor', label: 'Material mayor' },
+  { value: 'equipos_motorizados', label: 'Equipos motorizados' }
+]
+
 export function etiquetaDe(lista, value) {
   return lista.find((i) => i.value === value)?.label ?? value
 }
