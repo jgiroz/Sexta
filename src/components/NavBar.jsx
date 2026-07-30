@@ -45,8 +45,8 @@ export default function NavBar() {
               {profile?.nombre_completo ?? session.user.email}
               {esAdmin && <span className="chip-admin">admin</span>}
             </span>
-            <button className="btn-link" onClick={salir}>
-              Salir
+            <button className="navbar-salir" onClick={salir}>
+              Cerrar sesión
             </button>
           </>
         )}
