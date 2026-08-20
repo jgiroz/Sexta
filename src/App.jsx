@@ -14,6 +14,10 @@ const ReporteMaterialMayor = lazy(() => import('./pages/ReporteMaterialMayor'))
 const RevisarObservaciones = lazy(() => import('./pages/RevisarObservaciones'))
 const GestionUsuarios = lazy(() => import('./pages/GestionUsuarios'))
 const ConfiguracionCorreos = lazy(() => import('./pages/ConfiguracionCorreos'))
+const Formularios = lazy(() => import('./pages/Formularios'))
+const EditarFormulario = lazy(() => import('./pages/EditarFormulario'))
+const ElegirFormulario = lazy(() => import('./pages/ElegirFormulario'))
+const LlenarFormulario = lazy(() => import('./pages/LlenarFormulario'))
 
 const Cargando = () => <div className="pagina cargando">Cargando…</div>
 
@@ -111,6 +115,46 @@ export default function App() {
             <ProtectedRoute>
               <Suspense fallback={<Cargando />}>
                 <ConfiguracionCorreos />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/formularios"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<Cargando />}>
+                <Formularios />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/formularios/:id"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<Cargando />}>
+                <EditarFormulario />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/control-carro"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<Cargando />}>
+                <ElegirFormulario />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/formulario/:id"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<Cargando />}>
+                <LlenarFormulario />
               </Suspense>
             </ProtectedRoute>
           }
