@@ -3,7 +3,16 @@ import { useAuth } from '../lib/AuthContext'
 import InstallButton from './InstallButton'
 
 export default function NavBar() {
-  const { session, profile, esAdmin, esVoluntario, esCuartelero, puedeGestionar, signOut } = useAuth()
+  const {
+    session,
+    profile,
+    esAdmin,
+    esVoluntario,
+    esCuartelero,
+    puedeGestionar,
+    puedeEditarFormularios,
+    signOut
+  } = useAuth()
   const navigate = useNavigate()
 
   const salir = async () => {
@@ -34,6 +43,11 @@ export default function NavBar() {
             {esAdmin && (
               <Link to="/usuarios" className="btn-link navbar-panel-link">
                 👤 Usuarios
+              </Link>
+            )}
+            {puedeEditarFormularios && (
+              <Link to="/formularios" className="btn-link navbar-panel-link">
+                📋 Formularios
               </Link>
             )}
             {esAdmin && (
