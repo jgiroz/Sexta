@@ -1,16 +1,16 @@
 import { Suspense, lazy } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import NavBar from './components/NavBar'
+import MenuLateral from './components/MenuLateral'
 import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
-import Home from './pages/Home'
+import Inicio from './pages/Inicio'
 import NuevoLevantamiento from './pages/NuevoLevantamiento'
 import DetalleLevantamiento from './pages/DetalleLevantamiento'
 import MisTareas from './pages/MisTareas'
 
-const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Levantamientos = lazy(() => import('./pages/Levantamientos'))
 const ReporteDiario = lazy(() => import('./pages/ReporteDiario'))
-const ReporteMaterialMayor = lazy(() => import('./pages/ReporteMaterialMayor'))
 const RevisarObservaciones = lazy(() => import('./pages/RevisarObservaciones'))
 const GestionUsuarios = lazy(() => import('./pages/GestionUsuarios'))
 const ConfiguracionCorreos = lazy(() => import('./pages/ConfiguracionCorreos'))
@@ -21,145 +21,38 @@ const LlenarFormulario = lazy(() => import('./pages/LlenarFormulario'))
 
 const Cargando = () => <div className="pagina cargando">Cargando…</div>
 
+const protegida = (elemento, conSuspense = false) => (
+  <ProtectedRoute>{conSuspense ? <Suspense fallback={<Cargando />}>{elemento}</Suspense> : elemento}</ProtectedRoute>
+)
+
 export default function App() {
+  const { pathname } = useLocation()
+  const enLogin = pathname === '/login'
+
   return (
     <>
       <NavBar />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/nuevo"
-          element={
-            <ProtectedRoute>
-              <NuevoLevantamiento />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/levantamiento/:id"
-          element={
-            <ProtectedRoute>
-              <DetalleLevantamiento />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/mis-tareas"
-          element={
-            <ProtectedRoute>
-              <MisTareas />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/reporte-diario/material_mayor"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <ReporteMaterialMayor />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/reporte-diario/:tipo"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <ReporteDiario />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/observaciones"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <RevisarObservaciones />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <Dashboard />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/usuarios"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <GestionUsuarios />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/correos"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <ConfiguracionCorreos />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/formularios"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <Formularios />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/formularios/:id"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <EditarFormulario />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/control-carro"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <ElegirFormulario />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/formulario/:id"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<Cargando />}>
-                <LlenarFormulario />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      <div className={enLogin ? '' : 'contenedor-app'}>
+        {!enLogin && <MenuLateral />}
+        <main className="contenido-app">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={protegida(<Inicio />)} />
+            <Route path="/nuevo" element={protegida(<NuevoLevantamiento />)} />
+            <Route path="/levantamiento/:id" element={protegida(<DetalleLevantamiento />)} />
+            <Route path="/mis-tareas" element={protegida(<MisTareas />)} />
+            <Route path="/levantamientos" element={protegida(<Levantamientos />, true)} />
+            <Route path="/reporte-diario/:tipo" element={protegida(<ReporteDiario />, true)} />
+            <Route path="/observaciones" element={protegida(<RevisarObservaciones />, true)} />
+            <Route path="/usuarios" element={protegida(<GestionUsuarios />, true)} />
+            <Route path="/correos" element={protegida(<ConfiguracionCorreos />, true)} />
+            <Route path="/formularios" element={protegida(<Formularios />, true)} />
+            <Route path="/formularios/:id" element={protegida(<EditarFormulario />, true)} />
+            <Route path="/control-carro" element={protegida(<ElegirFormulario />, true)} />
+            <Route path="/formulario/:id" element={protegida(<LlenarFormulario />, true)} />
+          </Routes>
+        </main>
+      </div>
     </>
   )
 }
