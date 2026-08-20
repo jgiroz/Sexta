@@ -48,10 +48,17 @@ export function AuthProvider({ children }) {
   const signOut = () => supabase.auth.signOut()
 
   const esAdmin = profile?.rol === 'admin'
+  const esCapitan = profile?.tipo === 'capitan'
+  const esTeniente = profile?.tipo === 'teniente'
+  // 'oficial' se mantiene por compatibilidad con cuentas antiguas.
   const esOficial = profile?.tipo === 'oficial'
   const esCuartelero = profile?.tipo === 'cuartelero'
-  const esVoluntario = !esAdmin && !esOficial && !esCuartelero
-  const puedeGestionar = esAdmin || esOficial
+  const esVoluntario = !esAdmin && !esCapitan && !esTeniente && !esOficial && !esCuartelero
+
+  // Permisos operativos: asignar, cambiar estado, eliminar, facturas.
+  const puedeGestionar = esAdmin || esCapitan || esTeniente || esOficial
+  // Editar formularios y sus destinatarios de correo.
+  const puedeEditarFormularios = esAdmin || esCapitan
 
   return (
     <AuthContext.Provider
@@ -60,10 +67,13 @@ export function AuthProvider({ children }) {
         profile,
         loading,
         esAdmin,
+        esCapitan,
+        esTeniente,
         esOficial,
         esCuartelero,
         esVoluntario,
         puedeGestionar,
+        puedeEditarFormularios,
         signIn,
         signUp,
         signOut
