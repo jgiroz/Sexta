@@ -26,7 +26,7 @@ export default function ElegirFormulario() {
       <Link to="/" className="btn-link">
         ← Volver
       </Link>
-      <h2>Control de carro</h2>
+      <h2>Reporte Material Mayor</h2>
 
       {error && <p className="error">{error}</p>}
       {cargando && <p className="cargando">Cargando…</p>}

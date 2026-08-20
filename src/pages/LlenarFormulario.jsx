@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabaseClient'
+import { supabase, BUCKET_FOTOS } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
+import { comprimirImagen } from '../lib/imagen'
 import {
   respuestaVacia,
   motivoDeAlerta,
@@ -19,11 +20,16 @@ export default function LlenarFormulario() {
   const [preguntas, setPreguntas] = useState([])
   const [respuestas, setRespuestas] = useState({})
   const [observaciones, setObservaciones] = useState('')
+  const [fotos, setFotos] = useState([])
 
   const [cargando, setCargando] = useState(true)
   const [guardando, setGuardando] = useState(false)
+  const [comprimiendo, setComprimiendo] = useState(false)
   const [error, setError] = useState('')
   const [resumen, setResumen] = useState(null)
+
+  const inputCamaraRef = useRef(null)
+  const inputGaleriaRef = useRef(null)
 
   const cargar = useCallback(async () => {
     setCargando(true)
@@ -74,6 +80,24 @@ export default function LlenarFormulario() {
     setRespuestas((prev) => ({ ...prev, [preguntaId]: { ...prev[preguntaId], ...cambios } }))
   }
 
+  // Se comprimen antes de guardarlas en memoria; la subida ocurre al enviar.
+  const agregarFotos = async (e) => {
+    const archivos = Array.from(e.target.files ?? [])
+    if (archivos.length === 0) return
+    setComprimiendo(true)
+    try {
+      const comprimidas = await Promise.all(archivos.map((a) => comprimirImagen(a)))
+      setFotos((prev) => [...prev, ...comprimidas])
+    } catch (err) {
+      setError('No se pudo procesar la imagen: ' + (err.message ?? ''))
+    } finally {
+      setComprimiendo(false)
+      e.target.value = ''
+    }
+  }
+
+  const quitarFoto = (i) => setFotos((prev) => prev.filter((_, idx) => idx !== i))
+
   const conAlerta = preguntas.filter((p) => motivoDeAlerta(p, respuestas[p.id] ?? {}))
 
   const enviar = async (e) => {
@@ -105,6 +129,17 @@ export default function LlenarFormulario() {
     try {
       const codigoCarro = formulario.carros?.codigo ?? null
 
+      // Subida de las fotos adjuntas
+      const urlsFotos = []
+      for (const foto of fotos) {
+        const ext = foto.name.split('.').pop() || 'jpg'
+        const ruta = `formularios/${session.user.id}/${Date.now()}-${urlsFotos.length}.${ext}`
+        const { error: errSubida } = await supabase.storage.from(BUCKET_FOTOS).upload(ruta, foto)
+        if (errSubida) throw errSubida
+        const { data: pub } = supabase.storage.from(BUCKET_FOTOS).getPublicUrl(ruta)
+        urlsFotos.push(pub.publicUrl)
+      }
+
       // Se guarda una copia completa de las preguntas y sus respuestas,
       // para que editar el formulario después no altere este registro.
       const datos = preguntas.map((p) => {
@@ -134,7 +169,8 @@ export default function LlenarFormulario() {
           autor_id: session.user.id,
           datos,
           total_alertas: alertas.length,
-          observaciones: observaciones.trim() || null
+          observaciones: observaciones.trim() || null,
+          fotos: urlsFotos
         })
         .select('id')
         .single()
@@ -254,6 +290,54 @@ export default function LlenarFormulario() {
           />
         </label>
 
+        <h3 className="subtitulo-seccion">Fotos (opcional)</h3>
+        <div className="botones-foto">
+          <button
+            type="button"
+            className="btn-secundario"
+            onClick={() => inputCamaraRef.current?.click()}
+          >
+            📷 Tomar foto
+          </button>
+          <button
+            type="button"
+            className="btn-secundario"
+            onClick={() => inputGaleriaRef.current?.click()}
+          >
+            🖼️ Elegir de galería
+          </button>
+        </div>
+        <input
+          ref={inputCamaraRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={agregarFotos}
+          style={{ display: 'none' }}
+        />
+        <input
+          ref={inputGaleriaRef}
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={agregarFotos}
+          style={{ display: 'none' }}
+        />
+        {comprimiendo && <p className="muted-chico">Optimizando imagen…</p>}
+
+        {fotos.length > 0 && (
+          <div className="galeria-fotos">
+            {fotos.map((f, i) => (
+              <div key={i} className="miniatura">
+                <img src={URL.createObjectURL(f)} alt={`Foto ${i + 1}`} />
+                <button type="button" className="quitar-foto" onClick={() => quitarFoto(i)}>
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         {conAlerta.length > 0 && (
           <p className="aviso-atencion">
             ⚠ {conAlerta.length} alerta(s) detectada(s). Se enviarán en un solo correo resumen.
@@ -262,7 +346,7 @@ export default function LlenarFormulario() {
 
         {error && <p className="error">{error}</p>}
 
-        <button className="btn-primario" type="submit" disabled={guardando}>
+        <button className="btn-primario" type="submit" disabled={guardando || comprimiendo}>
           {guardando ? 'Enviando…' : 'Guardar y enviar'}
         </button>
       </form>
