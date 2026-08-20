@@ -9,8 +9,11 @@ const ROLES = [
 ]
 const TIPOS = [
   { value: 'voluntario', label: 'Voluntario' },
-  { value: 'oficial', label: 'Oficial' },
-  { value: 'cuartelero', label: 'Cuartelero' }
+  { value: 'cuartelero', label: 'Cuartelero' },
+  { value: 'teniente', label: 'Teniente' },
+  { value: 'capitan', label: 'Capitán' },
+  // Se mantiene por compatibilidad con cuentas creadas antes de los cargos.
+  { value: 'oficial', label: 'Oficial (antiguo)' }
 ]
 
 export default function GestionUsuarios() {
