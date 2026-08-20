@@ -38,7 +38,7 @@ export default function Inicio() {
   const primerNombre = profile?.nombre_completo?.split(' ')[0] ?? ''
 
   return (
-    <div className="pagina">
+    <div className="pagina pagina-inicio">
       <h2>Hola{primerNombre ? `, ${primerNombre}` : ''}</h2>
 
       {/* Aquí irán, más arriba que todo, las solicitudes abiertas de
@@ -58,29 +58,34 @@ export default function Inicio() {
           <p className="muted">No tienes levantamientos pendientes. 🎉</p>
         )}
 
-        <div className="lista">
+        {/* Se ven 5; el resto se alcanza con la barra de desplazamiento. */}
+        <div className="lista-compacta">
           {pendientes.map((l) => (
-            <Link to={`/levantamiento/${l.id}`} key={l.id} className="tarjeta-item">
-              <div className="tarjeta-contenido">
-                <div className="tarjeta-badges">
-                  <Badge texto={etiquetaDe(ESTADOS, l.estado)} color={colorDe(ESTADOS, l.estado)} />
-                  <Badge
-                    texto={etiquetaDe(PRIORIDADES, l.prioridad)}
-                    color={colorDe(PRIORIDADES, l.prioridad)}
-                  />
-                  {l.carros?.codigo && <Badge texto={l.carros.codigo} color="#34495e" />}
-                </div>
-                <h3>{l.titulo}</h3>
-                <p className="muted-chico">{new Date(l.creado_at).toLocaleDateString('es-CL')}</p>
-              </div>
+            <Link to={`/levantamiento/${l.id}`} key={l.id} className="fila-compacta">
+              <span className="punto-estado" style={{ background: colorDe(ESTADOS, l.estado) }} />
+              <span className="fila-compacta-titulo">{l.titulo}</span>
+              <span className="fila-compacta-meta">
+                {l.carros?.codigo && <Badge texto={l.carros.codigo} color="#34495e" />}
+                <Badge texto={etiquetaDe(ESTADOS, l.estado)} color={colorDe(ESTADOS, l.estado)} />
+                <Badge
+                  texto={etiquetaDe(PRIORIDADES, l.prioridad)}
+                  color={colorDe(PRIORIDADES, l.prioridad)}
+                />
+                <span className="muted-chico fecha-compacta">
+                  {new Date(l.creado_at).toLocaleDateString('es-CL')}
+                </span>
+              </span>
             </Link>
           ))}
         </div>
+        {pendientes.length > 5 && (
+          <p className="muted-chico">Desplázate en la lista para ver los {pendientes.length}.</p>
+        )}
       </section>
 
       <section className="bloque-inicio">
         <h3>Accesos</h3>
-        <div className="grilla-accesos">
+        <div className="fila-accesos">
           <Link to="/nuevo" className="acceso destacado">
             <span className="acceso-icono">🧯</span>
             Levantamiento de problema
