@@ -568,42 +568,92 @@ button:disabled { opacity: 0.6; cursor: default; }
 }
 .bloque-inicio h3 { margin: 0 0 0.4rem; font-size: 1rem; }
 
-.grilla-accesos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+/* Inicio aprovecha el ancho disponible; los formularios siguen angostos. */
+.pagina-inicio { max-width: 1250px; }
+
+/* --- Lista compacta: 5 visibles y el resto con barra --- */
+.lista-compacta {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  overflow-y: auto;
+  max-height: 260px; /* aprox. 5 filas */
+  margin-top: 0.4rem;
+}
+.fila-compacta {
+  display: flex;
+  align-items: center;
   gap: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid #f0f1f3;
+  color: var(--texto);
+  font-size: 0.9rem;
+  min-width: 0;
+}
+.fila-compacta:last-child { border-bottom: none; }
+.fila-compacta:hover { background: #fafbfc; }
+.punto-estado { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.fila-compacta-titulo {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fila-compacta-meta { display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.fecha-compacta { white-space: nowrap; }
+@media (max-width: 700px) {
+  /* En celular se ocultan las etiquetas para que quepa el título */
+  .fila-compacta-meta .badge:not(:first-child) { display: none; }
+  .lista-compacta { max-height: 300px; }
+}
+
+/* --- Accesos en una sola fila en computador --- */
+.fila-accesos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-top: 0.5rem;
 }
 .acceso {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  text-align: center;
+  gap: 0.5rem;
   background: white;
   border: 1px solid var(--borde);
   border-radius: 10px;
-  padding: 1rem 0.6rem;
+  padding: 0.6rem 0.9rem;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--texto);
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   position: relative;
+  white-space: nowrap;
+  flex: 1 1 auto;
+  justify-content: center;
 }
 .acceso:hover { border-color: var(--rojo); color: var(--rojo); }
 .acceso.destacado { border-color: var(--rojo); background: #fdf3f2; color: var(--rojo-oscuro); }
 .acceso.proximamente { opacity: 0.45; }
 .acceso.proximamente:hover { border-color: var(--borde); color: var(--texto); }
-.acceso-icono { font-size: 1.5rem; }
+.acceso-icono { font-size: 1.15rem; }
 .etiqueta-pronto {
-  position: absolute;
-  top: 5px;
-  right: 6px;
   font-size: 0.6rem;
   background: var(--borde);
   color: #5a6570;
   padding: 0.05rem 0.35rem;
   border-radius: 999px;
   font-weight: 700;
+}
+@media (max-width: 700px) {
+  /* En celular, dos por fila y algo más altos para el dedo */
+  .acceso {
+    flex: 1 1 calc(50% - 0.25rem);
+    justify-content: flex-start;
+    padding: 0.85rem 0.75rem;
+    white-space: normal;
+  }
 }
