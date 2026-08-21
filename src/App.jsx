@@ -11,7 +11,9 @@ import MisTareas from './pages/MisTareas'
 
 const Levantamientos = lazy(() => import('./pages/Levantamientos'))
 const ReporteDiario = lazy(() => import('./pages/ReporteDiario'))
-const RevisarObservaciones = lazy(() => import('./pages/RevisarObservaciones'))
+const ReportesCarros = lazy(() => import('./pages/ReportesCarros'))
+const DetalleReporte = lazy(() => import('./pages/DetalleReporte'))
+const MaterialMayor = lazy(() => import('./pages/MaterialMayor'))
 const GestionUsuarios = lazy(() => import('./pages/GestionUsuarios'))
 const ConfiguracionCorreos = lazy(() => import('./pages/ConfiguracionCorreos'))
 const Formularios = lazy(() => import('./pages/Formularios'))
@@ -43,7 +45,9 @@ export default function App() {
             <Route path="/mis-tareas" element={protegida(<MisTareas />)} />
             <Route path="/levantamientos" element={protegida(<Levantamientos />, true)} />
             <Route path="/reporte-diario/:tipo" element={protegida(<ReporteDiario />, true)} />
-            <Route path="/observaciones" element={protegida(<RevisarObservaciones />, true)} />
+            <Route path="/reportes-carros" element={protegida(<ReportesCarros />, true)} />
+            <Route path="/reporte/:id" element={protegida(<DetalleReporte />, true)} />
+            <Route path="/material-mayor" element={protegida(<MaterialMayor />, true)} />
             <Route path="/usuarios" element={protegida(<GestionUsuarios />, true)} />
             <Route path="/correos" element={protegida(<ConfiguracionCorreos />, true)} />
             <Route path="/formularios" element={protegida(<Formularios />, true)} />
