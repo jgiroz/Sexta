@@ -611,6 +611,69 @@ button:disabled { opacity: 0.6; cursor: default; }
   .lista-compacta { max-height: 300px; }
 }
 
+/* --- Semáforo de carros --- */
+.grilla-carros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+.grilla-carros.compacta { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.tarjeta-carro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  background: white;
+  border: 1px solid var(--borde);
+  border-top: 4px solid var(--borde);
+  border-radius: 10px;
+  padding: 0.8rem 0.9rem;
+  color: var(--texto);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.tarjeta-carro:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+.carro-codigo { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.02em; }
+.carro-estado { font-size: 0.82rem; font-weight: 700; }
+.nota-carro { font-style: italic; }
+
+.fila-material {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: white;
+  border: 1px solid var(--borde);
+  border-left: 5px solid var(--borde);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+.fila-material-info { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.fila-material-botones { display: flex; gap: 0.4rem; flex-shrink: 0; }
+.carro-codigo-grande { font-size: 1.15rem; }
+
+.fila-con-alerta { background: #fdf3f2; }
+.cabecera-reporte {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.cabecera-reporte h2 { margin-bottom: 0.2rem; }
+.miniatura-grande { display: block; width: 150px; }
+.miniatura-grande img { width: 100%; border-radius: 8px; }
+
+/* --- Impresión: solo el reporte --- */
+@media print {
+  .navbar, .menu-lateral, .no-imprimir, .btn-link, .btn-secundario { display: none !important; }
+  body { background: white; }
+  .pagina, .pagina-inicio { max-width: none; padding: 0; }
+  .bloque-seccion { border: none; padding: 0; margin-top: 0.8rem; break-inside: avoid; }
+  .tabla-simple { font-size: 0.8rem; }
+  .fila-con-alerta { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
+}
+
 /* --- Accesos en una sola fila en computador --- */
 .fila-accesos {
   display: flex;
