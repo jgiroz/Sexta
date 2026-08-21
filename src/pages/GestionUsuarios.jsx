@@ -10,6 +10,7 @@ const ROLES = [
 const TIPOS = [
   { value: 'voluntario', label: 'Voluntario' },
   { value: 'cuartelero', label: 'Cuartelero' },
+  { value: 'maquinista', label: 'Maquinista' },
   { value: 'teniente', label: 'Teniente' },
   { value: 'capitan', label: 'Capitán' },
   // Se mantiene por compatibilidad con cuentas creadas antes de los cargos.

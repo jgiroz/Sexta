@@ -5,6 +5,7 @@ import { useAuth } from '../lib/AuthContext'
 import { construirMenu } from '../lib/menu'
 import { ESTADOS, ESTADOS_CERRADOS, PRIORIDADES, etiquetaDe, colorDe } from '../lib/constants'
 import Badge from '../components/Badge'
+import EstadoCarros from '../components/EstadoCarros'
 
 // Pantalla de entrada.
 // Primero lo que le corresponde a la persona (sus pendientes y, más
@@ -12,7 +13,8 @@ import Badge from '../components/Badge'
 // accesos del menú, que en celular son la única forma de navegar.
 export default function Inicio() {
   const permisos = useAuth()
-  const { session, profile } = permisos
+  const { session, profile, esCapitan, esTeniente, esAdmin } = permisos
+  const esMando = esCapitan || esTeniente || esAdmin
 
   const [pendientes, setPendientes] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -44,6 +46,18 @@ export default function Inicio() {
       {/* Aquí irán, más arriba que todo, las solicitudes abiertas de
           Capitán y Tenientes para inscribirse. Se agregan al construir
           esos módulos. */}
+
+      {esMando && (
+        <section className="bloque-inicio">
+          <div className="bloque-inicio-cabecera">
+            <h3>Estado de carros</h3>
+            <Link to="/material-mayor" className="btn-link">
+              Cambiar estado
+            </Link>
+          </div>
+          <EstadoCarros />
+        </section>
+      )}
 
       <section className="bloque-inicio">
         <div className="bloque-inicio-cabecera">
