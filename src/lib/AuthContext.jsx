@@ -53,7 +53,9 @@ export function AuthProvider({ children }) {
   // 'oficial' se mantiene por compatibilidad con cuentas antiguas.
   const esOficial = profile?.tipo === 'oficial'
   const esCuartelero = profile?.tipo === 'cuartelero'
-  const esVoluntario = !esAdmin && !esCapitan && !esTeniente && !esOficial && !esCuartelero
+  const esMaquinista = profile?.tipo === 'maquinista'
+  const esVoluntario =
+    !esAdmin && !esCapitan && !esTeniente && !esOficial && !esCuartelero && !esMaquinista
 
   // Permisos operativos: asignar, cambiar estado, eliminar, facturas.
   const puedeGestionar = esAdmin || esCapitan || esTeniente || esOficial
@@ -71,6 +73,7 @@ export function AuthProvider({ children }) {
         esTeniente,
         esOficial,
         esCuartelero,
+        esMaquinista,
         esVoluntario,
         puedeGestionar,
         puedeEditarFormularios,

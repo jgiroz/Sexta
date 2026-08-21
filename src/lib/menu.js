@@ -13,6 +13,7 @@ export function construirMenu(permisos) {
     esOficial,
     esCuartelero,
     esVoluntario,
+    esMaquinista,
     puedeGestionar,
     puedeEditarFormularios
   } = permisos
@@ -32,7 +33,7 @@ export function construirMenu(permisos) {
       a: '/mis-tareas',
       icono: '📌',
       texto: 'Mis pendientes',
-      visible: esVoluntario || esCuartelero
+      visible: esVoluntario || esCuartelero || esMaquinista
     },
     {
       a: '/control-carro',
@@ -41,10 +42,10 @@ export function construirMenu(permisos) {
       visible: esCuartelero
     },
     {
-      a: '/observaciones',
+      a: '/reportes-carros',
       icono: '🔎',
       texto: 'Reportes Carros',
-      visible: mandoOperativo || esCuartelero || esOficial
+      visible: mandoOperativo || esCuartelero || esOficial || esMaquinista
     },
 
     {
@@ -78,8 +79,7 @@ export function construirMenu(permisos) {
       a: '/material-mayor',
       icono: '🚨',
       texto: 'Material Mayor',
-      visible: mandoOperativo,
-      proximamente: true
+      visible: mandoOperativo
     }
   ].filter((i) => i.visible)
 
