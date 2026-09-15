@@ -13,8 +13,10 @@ import EstadoCarros from '../components/EstadoCarros'
 // accesos del menú, que en celular son la única forma de navegar.
 export default function Inicio() {
   const permisos = useAuth()
-  const { session, profile, esCapitan, esTeniente, esAdmin } = permisos
+  const { session, profile, esCapitan, esTeniente, esAdmin, esCuartelero } = permisos
   const esMando = esCapitan || esTeniente || esAdmin
+  // El cuartelero también ve el estado de los carros, pero no puede cambiarlo.
+  const veEstadoCarros = esMando || esCuartelero
 
   const [pendientes, setPendientes] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -47,13 +49,15 @@ export default function Inicio() {
           Capitán y Tenientes para inscribirse. Se agregan al construir
           esos módulos. */}
 
-      {esMando && (
+      {veEstadoCarros && (
         <section className="bloque-inicio">
           <div className="bloque-inicio-cabecera">
             <h3>Estado de carros</h3>
-            <Link to="/material-mayor" className="btn-link">
-              Cambiar estado
-            </Link>
+            {esMando && (
+              <Link to="/material-mayor" className="btn-link">
+                Cambiar estado
+              </Link>
+            )}
           </div>
           <EstadoCarros />
         </section>
