@@ -17,21 +17,25 @@ export default function FormularioLevantamientos() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
 
+  const [tiposMaterial, setTiposMaterial] = useState([])
   const [nuevaCategoria, setNuevaCategoria] = useState('')
   const [nuevaPrioridad, setNuevaPrioridad] = useState('')
   const [nuevoCarro, setNuevoCarro] = useState('')
+  const [nuevoTipoMaterial, setNuevoTipoMaterial] = useState('')
 
   const cargar = useCallback(async () => {
     setCargando(true)
-    const [cats, prios, cars] = await Promise.all([
+    const [cats, prios, cars, tipos] = await Promise.all([
       supabase.from('categorias_levantamiento').select('*').order('orden'),
       supabase.from('prioridades_levantamiento').select('*').order('orden'),
-      supabase.from('carros').select('id, codigo, activo').order('codigo')
+      supabase.from('carros').select('id, codigo, activo').order('codigo'),
+      supabase.from('tipos_material').select('*').order('orden')
     ])
     if (cats.error) setError(cats.error.message)
     setCategorias(cats.data ?? [])
     setPrioridades(prios.data ?? [])
     setCarros(cars.data ?? [])
+    setTiposMaterial(tipos.data ?? [])
     setCargando(false)
     recargar()
   }, [recargar])
@@ -135,6 +139,34 @@ export default function FormularioLevantamientos() {
 
   const cambiarColor = (p, color) =>
     ejecutar(supabase.from('prioridades_levantamiento').update({ color }).eq('id', p.id))
+
+  // ---------------- tipos de material ----------------
+  const agregarTipoMaterial = (e) => {
+    e.preventDefault()
+    const etiqueta = nuevoTipoMaterial.trim()
+    if (!etiqueta) return
+    const clave = claveDesde(etiqueta)
+    if (!clave) {
+      setError('Ese nombre no sirve como tipo de material.')
+      return
+    }
+    setNuevoTipoMaterial('')
+    ejecutar(
+      supabase.from('tipos_material').insert({
+        clave,
+        etiqueta,
+        orden: tiposMaterial.length + 1
+      })
+    )
+  }
+
+  const renombrarTipoMaterial = (t) => {
+    const etiqueta = window.prompt('Nombre del tipo de material:', t.etiqueta)
+    if (!etiqueta || !etiqueta.trim()) return
+    ejecutar(
+      supabase.from('tipos_material').update({ etiqueta: etiqueta.trim() }).eq('id', t.id)
+    )
+  }
 
   // ---------------- carros ----------------
   const agregarCarro = (e) => {
@@ -254,6 +286,50 @@ export default function FormularioLevantamientos() {
             value={nuevoCarro}
             onChange={(e) => setNuevoCarro(e.target.value)}
             placeholder="Código del carro, ej: Z6"
+          />
+          <button className="btn-secundario" type="submit">
+            + Agregar
+          </button>
+        </form>
+      </section>
+
+      {/* ---------------- TIPOS DE MATERIAL ---------------- */}
+      <section className="bloque-seccion">
+        <h3>Tipos de material</h3>
+        <p className="muted-chico">
+          Aparecen cuando la categoría tiene encendido "pide tipo material". Aquí puedes agregar
+          los que uses: agua, rescate, trauma, ERA, y los que hagan falta.
+        </p>
+
+        {tiposMaterial.map((t) => (
+          <div key={t.id} className={`fila-catalogo ${t.activo ? '' : 'inactivo'}`}>
+            <div className="fila-catalogo-nombre">
+              <strong>{t.etiqueta}</strong>
+              <span className="muted-chico"> · {t.clave}</span>
+              {!t.activo && <span className="muted-chico"> · oculto</span>}
+            </div>
+            <div className="acciones-inline">
+              <button className="btn-mini" onClick={() => renombrarTipoMaterial(t)}>
+                Renombrar
+              </button>
+              <button className="btn-mini" onClick={() => alternar('tipos_material', t)}>
+                {t.activo ? 'Ocultar' : 'Mostrar'}
+              </button>
+              <button
+                className="btn-mini peligro"
+                onClick={() => eliminar('tipos_material', t, t.etiqueta)}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))}
+
+        <form onSubmit={agregarTipoMaterial} className="form-inline">
+          <input
+            value={nuevoTipoMaterial}
+            onChange={(e) => setNuevoTipoMaterial(e.target.value)}
+            placeholder="Ej: Material de agua, ERA, Trauma"
           />
           <button className="btn-secundario" type="submit">
             + Agregar

@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase, BUCKET_FOTOS } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { SUBCATEGORIAS_CARRO } from '../lib/constants'
 import { useCatalogos } from '../lib/CatalogosContext'
 import { comprimirImagen } from '../lib/imagen'
 
 export default function NuevoLevantamiento() {
   const { session, esCuartelero } = useAuth()
-  const { categorias, prioridades } = useCatalogos()
+  const { categorias, prioridades, tiposMaterial } = useCatalogos()
   const navigate = useNavigate()
   const [carros, setCarros] = useState([])
   const [personal, setPersonal] = useState([])
@@ -205,7 +204,7 @@ export default function NuevoLevantamiento() {
             Tipo de material (opcional)
             <select value={subcategoria} onChange={(e) => setSubcategoria(e.target.value)}>
               <option value="">— No aplica (problema del carro en general) —</option>
-              {SUBCATEGORIAS_CARRO.map((s) => (
+              {tiposMaterial.map((s) => (
                 <option key={s.value} value={s.value}>
                   {s.label}
                 </option>

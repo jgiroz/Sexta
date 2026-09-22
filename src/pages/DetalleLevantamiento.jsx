@@ -3,14 +3,14 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useCatalogos } from '../lib/CatalogosContext'
 import { supabase, BUCKET_FACTURAS } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { SUBCATEGORIAS_CARRO, ESTADOS, etiquetaDe, colorDe } from '../lib/constants'
+import { ESTADOS, etiquetaDe, colorDe } from '../lib/constants'
 import Badge from '../components/Badge'
 
 export default function DetalleLevantamiento() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { session, puedeGestionar } = useAuth()
-  const { categorias, prioridades } = useCatalogos()
+  const { categorias, prioridades, tiposMaterial } = useCatalogos()
 
   const [item, setItem] = useState(null)
   const [comentarios, setComentarios] = useState([])
@@ -169,7 +169,7 @@ export default function DetalleLevantamiento() {
         <Badge texto={etiquetaDe(prioridades, item.prioridad)} color={colorDe(prioridades, item.prioridad)} />
         <Badge texto={etiquetaDe(categorias, item.categoria)} color="#34495e" />
         {item.subcategoria && (
-          <Badge texto={etiquetaDe(SUBCATEGORIAS_CARRO, item.subcategoria)} color="#16a085" />
+          <Badge texto={etiquetaDe(tiposMaterial, item.subcategoria)} color="#16a085" />
         )}
         {item.carros?.codigo && <Badge texto={item.carros.codigo} color="#2c3e50" />}
       </div>
