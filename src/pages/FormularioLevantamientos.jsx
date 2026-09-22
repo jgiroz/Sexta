@@ -162,8 +162,10 @@ export default function FormularioLevantamientos() {
       <section className="bloque-seccion">
         <h3>Categorías</h3>
         <p className="muted-chico">
-          "Pide carro" muestra el selector de carro; "pide tipo de material" agrega el menú de
-          material menor o motorizado. Así una categoría nueva puede comportarse como Carro bomba.
+          Los dos primeros botones son interruptores: en verde con ✓ están encendidos, en gris con
+          ○ apagados. "Pide carro" muestra el selector de carro al reportar; "pide tipo material"
+          agrega el menú de material menor o motorizado. Así una categoría nueva puede comportarse
+          igual que Carro bomba, y Cuartel puede no pedir carro.
         </p>
 
         {categorias.map((c) => (
@@ -175,16 +177,18 @@ export default function FormularioLevantamientos() {
             </div>
             <div className="acciones-inline">
               <button
-                className={`btn-mini ${c.pide_carro ? 'activo-mini' : ''}`}
+                className={`chip-toggle ${c.pide_carro ? 'encendido' : ''}`}
                 onClick={() => alternarOpcion(c, 'pide_carro')}
+                aria-pressed={c.pide_carro}
               >
-                Pide carro
+                {c.pide_carro ? '✓' : '○'} Pide carro
               </button>
               <button
-                className={`btn-mini ${c.pide_subcategoria ? 'activo-mini' : ''}`}
+                className={`chip-toggle ${c.pide_subcategoria ? 'encendido' : ''}`}
                 onClick={() => alternarOpcion(c, 'pide_subcategoria')}
+                aria-pressed={c.pide_subcategoria}
               >
-                Pide tipo material
+                {c.pide_subcategoria ? '✓' : '○'} Pide tipo material
               </button>
               <button className="btn-mini" onClick={() => renombrarCategoria(c)}>
                 Renombrar
