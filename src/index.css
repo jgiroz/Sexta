@@ -539,6 +539,16 @@ button:disabled { opacity: 0.6; cursor: default; }
 .texto-alerta { color: var(--rojo-oscuro); font-size: 0.8rem; margin: 0.4rem 0 0; font-weight: 600; }
 .marca-obligatoria { color: var(--rojo); }
 
+/* Campo destacado: "¿Quién hace el reporte?" en la tablet compartida */
+.campo-destacado {
+  background: #fdf3f2;
+  border: 1px solid var(--rojo);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+}
+.lista-facturas li.inactivo { opacity: 0.5; }
+.lista-facturas li { display: flex; align-items: center; gap: 0.5rem; }
+
 /* --- Fotos adjuntas --- */
 .galeria-fotos { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
 .miniatura { position: relative; width: 84px; height: 84px; }

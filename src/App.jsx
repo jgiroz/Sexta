@@ -14,6 +14,7 @@ const ReporteDiario = lazy(() => import('./pages/ReporteDiario'))
 const ReportesCarros = lazy(() => import('./pages/ReportesCarros'))
 const DetalleReporte = lazy(() => import('./pages/DetalleReporte'))
 const MaterialMayor = lazy(() => import('./pages/MaterialMayor'))
+const PersonalCuartel = lazy(() => import('./pages/PersonalCuartel'))
 const GestionUsuarios = lazy(() => import('./pages/GestionUsuarios'))
 const ConfiguracionCorreos = lazy(() => import('./pages/ConfiguracionCorreos'))
 const Formularios = lazy(() => import('./pages/Formularios'))
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="/reportes-carros" element={protegida(<ReportesCarros />, true)} />
             <Route path="/reporte/:id" element={protegida(<DetalleReporte />, true)} />
             <Route path="/material-mayor" element={protegida(<MaterialMayor />, true)} />
+            <Route path="/personal-cuartel" element={protegida(<PersonalCuartel />, true)} />
             <Route path="/usuarios" element={protegida(<GestionUsuarios />, true)} />
             <Route path="/correos" element={protegida(<ConfiguracionCorreos />, true)} />
             <Route path="/formularios" element={protegida(<Formularios />, true)} />
