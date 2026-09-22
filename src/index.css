@@ -549,6 +549,55 @@ button:disabled { opacity: 0.6; cursor: default; }
 .lista-facturas li.inactivo { opacity: 0.5; }
 .lista-facturas li { display: flex; align-items: center; gap: 0.5rem; }
 
+/* --- Catálogos: categorías, carros y prioridades --- */
+.fila-catalogo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f0f1f3;
+}
+.fila-catalogo:last-of-type { border-bottom: none; }
+.fila-catalogo.inactivo { opacity: 0.45; }
+.fila-catalogo-nombre {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  font-size: 0.95rem;
+}
+
+/* Interruptor encendido/apagado, para que se vea de un vistazo */
+.chip-toggle {
+  border: 1px solid var(--borde);
+  background: white;
+  color: #7f8c8d;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.chip-toggle:hover { border-color: #27ae60; }
+.chip-toggle.encendido {
+  background: #27ae60;
+  border-color: #27ae60;
+  color: white;
+}
+
+.selector-color {
+  width: 34px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
 /* --- Fotos adjuntas --- */
 .galeria-fotos { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
 .miniatura { position: relative; width: 84px; height: 84px; }
