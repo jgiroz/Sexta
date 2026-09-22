@@ -12,8 +12,10 @@ import {
 
 export default function LlenarFormulario() {
   const { id } = useParams()
-  const { session } = useAuth()
+  const { session, esCuartelero } = useAuth()
   const navigate = useNavigate()
+  const [personal, setPersonal] = useState([])
+  const [quienReporta, setQuienReporta] = useState('')
 
   const [formulario, setFormulario] = useState(null)
   const [secciones, setSecciones] = useState([])
@@ -76,6 +78,19 @@ export default function LlenarFormulario() {
     cargar()
   }, [cargar])
 
+  // La tablet del cuartel es compartida, así que se pregunta quién reporta.
+  useEffect(() => {
+    if (!esCuartelero) return
+    supabase
+      .from('personal_cuartel')
+      .select('id, nombre')
+      .eq('activo', true)
+      .order('nombre')
+      .then(({ data }) => setPersonal(data ?? []))
+  }, [esCuartelero])
+
+  const pideQuienReporta = esCuartelero && personal.length > 0
+
   const actualizar = (preguntaId, cambios) => {
     setRespuestas((prev) => ({ ...prev, [preguntaId]: { ...prev[preguntaId], ...cambios } }))
   }
@@ -103,6 +118,11 @@ export default function LlenarFormulario() {
   const enviar = async (e) => {
     e.preventDefault()
     setError('')
+
+    if (pideQuienReporta && !quienReporta) {
+      setError('Indica quién está haciendo el reporte.')
+      return
+    }
 
     // Obligatorias sin responder
     const faltante = preguntas.find(
@@ -170,7 +190,8 @@ export default function LlenarFormulario() {
           datos,
           total_alertas: alertas.length,
           observaciones: observaciones.trim() || null,
-          fotos: urlsFotos
+          fotos: urlsFotos,
+          realizado_por_nombre: quienReporta || null
         })
         .select('id')
         .single()
@@ -259,6 +280,24 @@ export default function LlenarFormulario() {
       </p>
 
       <form onSubmit={enviar} className="form">
+        {pideQuienReporta && (
+          <label className="campo-destacado">
+            ¿Quién hace el reporte?
+            <select
+              value={quienReporta}
+              onChange={(e) => setQuienReporta(e.target.value)}
+              required
+            >
+              <option value="">— Selecciona tu nombre —</option>
+              {personal.map((p) => (
+                <option key={p.id} value={p.nombre}>
+                  {p.nombre}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
         {seccionesOrdenadas.map((seccion) => {
           const suyas = preguntas
             .filter((p) => p.seccion_id === seccion.id)

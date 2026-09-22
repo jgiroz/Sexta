@@ -6,9 +6,11 @@ import { CATEGORIAS, SUBCATEGORIAS_CARRO } from '../lib/constants'
 import { comprimirImagen } from '../lib/imagen'
 
 export default function NuevoLevantamiento() {
-  const { session } = useAuth()
+  const { session, esCuartelero } = useAuth()
   const navigate = useNavigate()
   const [carros, setCarros] = useState([])
+  const [personal, setPersonal] = useState([])
+  const [quienReporta, setQuienReporta] = useState('')
   const [titulo, setTitulo] = useState('')
   const [descripcion, setDescripcion] = useState('')
   const [categoria, setCategoria] = useState('otro')
@@ -32,6 +34,19 @@ export default function NuevoLevantamiento() {
       .eq('activo', true)
       .then(({ data }) => setCarros(data ?? []))
   }, [])
+
+  // La tablet del cuartel es compartida, así que se pregunta quién reporta.
+  useEffect(() => {
+    if (!esCuartelero) return
+    supabase
+      .from('personal_cuartel')
+      .select('id, nombre')
+      .eq('activo', true)
+      .order('nombre')
+      .then(({ data }) => setPersonal(data ?? []))
+  }, [esCuartelero])
+
+  const pideQuienReporta = esCuartelero && personal.length > 0
 
   const cambiarCategoria = (valor) => {
     setCategoria(valor)
@@ -64,6 +79,11 @@ export default function NuevoLevantamiento() {
       return
     }
 
+    if (pideQuienReporta && !quienReporta) {
+      setError('Indica quién está haciendo el reporte.')
+      return
+    }
+
     setEnviando(true)
     try {
       let foto_url = null
@@ -90,7 +110,8 @@ export default function NuevoLevantamiento() {
           ubicacion,
           prioridad,
           foto_url,
-          reportado_por: session.user.id
+          reportado_por: session.user.id,
+          reportado_por_nombre: quienReporta || null
         })
         .select('id')
         .single()
@@ -111,6 +132,24 @@ export default function NuevoLevantamiento() {
       </Link>
       <h2>Nuevo levantamiento</h2>
       <form onSubmit={enviar} className="form">
+        {pideQuienReporta && (
+          <label className="campo-destacado">
+            ¿Quién hace el reporte?
+            <select
+              value={quienReporta}
+              onChange={(e) => setQuienReporta(e.target.value)}
+              required
+            >
+              <option value="">— Selecciona tu nombre —</option>
+              {personal.map((p) => (
+                <option key={p.id} value={p.nombre}>
+                  {p.nombre}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
         <label>
           Título
           <input

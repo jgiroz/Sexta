@@ -34,7 +34,7 @@ export default function DetalleLevantamiento() {
       supabase
         .from('levantamientos')
         .select(
-          'id, titulo, descripcion, categoria, subcategoria, estado, prioridad, ubicacion, foto_url, creado_at, carro_id, asignado_a, reportado_por, carros(codigo, nombre), reportante:profiles!levantamientos_reportado_por_fkey(nombre_completo), responsable:profiles!levantamientos_asignado_a_fkey(nombre_completo)'
+          'id, titulo, descripcion, categoria, subcategoria, estado, prioridad, ubicacion, foto_url, creado_at, carro_id, asignado_a, reportado_por, reportado_por_nombre, carros(codigo, nombre), reportante:profiles!levantamientos_reportado_por_fkey(nombre_completo), responsable:profiles!levantamientos_asignado_a_fkey(nombre_completo)'
         )
         .eq('id', id)
         .single(),
@@ -177,8 +177,11 @@ export default function DetalleLevantamiento() {
       <p>{item.descripcion}</p>
       {item.ubicacion && <p className="muted">📍 {item.ubicacion}</p>}
       <p className="muted-chico">
-        Reportado por {item.reportante?.nombre_completo ?? '—'} el{' '}
-        {new Date(item.creado_at).toLocaleString('es-CL')}
+        Reportado por{' '}
+        {item.reportado_por_nombre
+          ? `${item.reportado_por_nombre} (desde ${item.reportante?.nombre_completo ?? '—'})`
+          : (item.reportante?.nombre_completo ?? '—')}{' '}
+        el {new Date(item.creado_at).toLocaleString('es-CL')}
       </p>
       <p className="muted-chico">
         Responsable asignado: {item.responsable?.nombre_completo ?? 'Sin asignar'}

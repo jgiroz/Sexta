@@ -16,7 +16,7 @@ export default function DetalleReporte() {
     supabase
       .from('formulario_respuestas')
       .select(
-        'id, creado_at, total_alertas, observaciones, datos, fotos, carros(codigo), formularios(nombre), autor:profiles(nombre_completo)'
+        'id, creado_at, total_alertas, observaciones, datos, fotos, realizado_por_nombre, carros(codigo), formularios(nombre), autor:profiles(nombre_completo)'
       )
       .eq('id', id)
       .single()
@@ -60,7 +60,9 @@ export default function DetalleReporte() {
           <p className="muted-chico">
             {reporte.carros?.codigo ? `Carro ${reporte.carros.codigo} · ` : ''}
             {new Date(reporte.creado_at).toLocaleString('es-CL')} ·{' '}
-            {reporte.autor?.nombre_completo ?? '—'}
+            {reporte.realizado_por_nombre
+              ? `${reporte.realizado_por_nombre} (desde ${reporte.autor?.nombre_completo ?? '—'})`
+              : (reporte.autor?.nombre_completo ?? '—')}
           </p>
         </div>
         <button className="btn-secundario no-imprimir" onClick={() => window.print()}>
