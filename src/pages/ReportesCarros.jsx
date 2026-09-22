@@ -37,6 +37,13 @@ export default function ReportesCarros() {
     else setParams({ carro: valor })
   }
 
+  // Si la dirección cambia por fuera (por ejemplo, al llegar desde Inicio
+  // pinchando un carro), el filtro se pone al día. Sin esto el listado se
+  // quedaba mostrando lo anterior.
+  useEffect(() => {
+    setFiltroCarro(carroDeUrl)
+  }, [carroDeUrl])
+
   const cargarNovedades = useCallback(async () => {
     setCargando(true)
     let consulta = supabase
@@ -112,7 +119,10 @@ export default function ReportesCarros() {
       </Link>
       <h2>Reportes Carros</h2>
 
-      <EstadoCarros compacto />
+      <EstadoCarros compacto seleccionado={filtroCarro} onSeleccionar={cambiarCarro} />
+      <p className="muted-chico">
+        Pincha un carro para ver solo sus novedades. Vuelve a pincharlo para ver todos.
+      </p>
 
       <div className="pestanas">
         <button
