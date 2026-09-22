@@ -74,6 +74,12 @@ export function construirMenu(permisos) {
   const configuracion = [
     { a: '/usuarios', icono: '👤', texto: 'Usuarios', visible: esAdmin },
     { a: '/formularios', icono: '📋', texto: 'Formularios', visible: puedeEditarFormularios },
+    {
+      a: '/personal-cuartel',
+      icono: '🧑‍🚒',
+      texto: 'Personal de cuartel',
+      visible: puedeEditarFormularios
+    },
     { a: '/correos', icono: '✉️', texto: 'Correos', visible: esAdmin },
     {
       a: '/material-mayor',
