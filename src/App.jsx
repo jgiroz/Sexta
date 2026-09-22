@@ -17,7 +17,9 @@ const MaterialMayor = lazy(() => import('./pages/MaterialMayor'))
 const PersonalCuartel = lazy(() => import('./pages/PersonalCuartel'))
 const GestionUsuarios = lazy(() => import('./pages/GestionUsuarios'))
 const ConfiguracionCorreos = lazy(() => import('./pages/ConfiguracionCorreos'))
-const Formularios = lazy(() => import('./pages/Formularios'))
+const IndiceFormularios = lazy(() => import('./pages/IndiceFormularios'))
+const FormulariosCarros = lazy(() => import('./pages/Formularios'))
+const FormularioLevantamientos = lazy(() => import('./pages/FormularioLevantamientos'))
 const EditarFormulario = lazy(() => import('./pages/EditarFormulario'))
 const ElegirFormulario = lazy(() => import('./pages/ElegirFormulario'))
 const LlenarFormulario = lazy(() => import('./pages/LlenarFormulario'))
@@ -52,8 +54,16 @@ export default function App() {
             <Route path="/personal-cuartel" element={protegida(<PersonalCuartel />, true)} />
             <Route path="/usuarios" element={protegida(<GestionUsuarios />, true)} />
             <Route path="/correos" element={protegida(<ConfiguracionCorreos />, true)} />
-            <Route path="/formularios" element={protegida(<Formularios />, true)} />
-            <Route path="/formularios/:id" element={protegida(<EditarFormulario />, true)} />
+            <Route path="/formularios" element={protegida(<IndiceFormularios />, true)} />
+            <Route path="/formularios/carros" element={protegida(<FormulariosCarros />, true)} />
+            <Route
+              path="/formularios/levantamientos"
+              element={protegida(<FormularioLevantamientos />, true)}
+            />
+            <Route
+              path="/formularios/editar/:id"
+              element={protegida(<EditarFormulario />, true)}
+            />
             <Route path="/control-carro" element={protegida(<ElegirFormulario />, true)} />
             <Route path="/formulario/:id" element={protegida(<LlenarFormulario />, true)} />
           </Routes>

@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link, Navigate } from 'react-router-dom'
+import { useCatalogos } from '../lib/CatalogosContext'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { ESTADOS, ESTADOS_CERRADOS, PRIORIDADES, etiquetaDe, colorDe } from '../lib/constants'
+import { ESTADOS, ESTADOS_CERRADOS, etiquetaDe, colorDe } from '../lib/constants'
 import Badge from '../components/Badge'
 
 function usePantallaAncha(minWidth = 900) {
@@ -22,6 +23,7 @@ function usePantallaAncha(minWidth = 900) {
 // Lista completa de levantamientos, con asignación y cambio de estado.
 export default function Levantamientos() {
   const { session, puedeGestionar } = useAuth()
+  const { prioridades } = useCatalogos()
   const pantallaAncha = usePantallaAncha(900)
   const vistaTabla = puedeGestionar && pantallaAncha
 
@@ -100,8 +102,8 @@ export default function Levantamientos() {
         <div className="tarjeta-badges">
           <Badge texto={etiquetaDe(ESTADOS, l.estado)} color={colorDe(ESTADOS, l.estado)} />
           <Badge
-            texto={etiquetaDe(PRIORIDADES, l.prioridad)}
-            color={colorDe(PRIORIDADES, l.prioridad)}
+            texto={etiquetaDe(prioridades, l.prioridad)}
+            color={colorDe(prioridades, l.prioridad)}
           />
           {l.carros?.codigo && <Badge texto={l.carros.codigo} color="#34495e" />}
         </div>
@@ -203,8 +205,8 @@ export default function Levantamientos() {
                   </td>
                   <td>
                     <Badge
-                      texto={etiquetaDe(PRIORIDADES, l.prioridad)}
-                      color={colorDe(PRIORIDADES, l.prioridad)}
+                      texto={etiquetaDe(prioridades, l.prioridad)}
+                      color={colorDe(prioridades, l.prioridad)}
                     />
                   </td>
                   <td>

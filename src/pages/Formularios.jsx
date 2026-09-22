@@ -3,8 +3,9 @@ import { Link, Navigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 
-// Listado de formularios. Desde aquí se entra a editar cada uno.
-export default function Formularios() {
+// Listado de los formularios de reporte de carros.
+// El índice con los dos tipos de formulario está en IndiceFormularios.
+export default function FormulariosCarros() {
   const { puedeEditarFormularios } = useAuth()
   const [formularios, setFormularios] = useState([])
   const [carros, setCarros] = useState([])
@@ -68,10 +69,10 @@ export default function Formularios() {
 
   return (
     <div className="pagina">
-      <Link to="/" className="btn-link">
-        ← Volver
+      <Link to="/formularios" className="btn-link">
+        ← Volver a formularios
       </Link>
-      <h2>Formularios</h2>
+      <h2>Reporte diario material mayor</h2>
       <p className="muted">
         Aquí defines qué se pregunta en cada control. Los cambios se aplican de inmediato a los
         formularios en blanco; las respuestas ya enviadas conservan las preguntas que tenían al
@@ -93,7 +94,7 @@ export default function Formularios() {
                 </p>
               </div>
               <div className="tarjeta-formulario-acciones">
-                <Link to={`/formularios/${f.id}`} className="btn-secundario">
+                <Link to={`/formularios/editar/${f.id}`} className="btn-secundario">
                   Editar
                 </Link>
                 <button className="btn-link" onClick={() => eliminar(f)}>

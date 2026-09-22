@@ -231,7 +231,7 @@ export default function EditarFormulario() {
 
   return (
     <div className="pagina pagina-ancha">
-      <Link to="/formularios" className="btn-link">
+      <Link to="/formularios/carros" className="btn-link">
         ← Volver a formularios
       </Link>
       <h2>{formulario.nombre}</h2>

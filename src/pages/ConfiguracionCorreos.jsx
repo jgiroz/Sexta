@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
+import { useCatalogos } from '../lib/CatalogosContext'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { CATEGORIAS, etiquetaDe } from '../lib/constants'
+import { etiquetaDe } from '../lib/constants'
 
 const TIPOS_REPORTE = [
   { value: 'material_mayor', label: 'Material mayor' },
@@ -21,13 +22,14 @@ function esCorreoEntregable(correo) {
 
 export default function ConfiguracionCorreos() {
   const { esAdmin } = useAuth()
+  const { categorias } = useCatalogos()
   const [filas, setFilas] = useState([])
   const [carros, setCarros] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
 
   const [ambito, setAmbito] = useState('levantamiento')
-  const [categoria, setCategoria] = useState(CATEGORIAS[0].value)
+  const [categoria, setCategoria] = useState(categorias[0].value)
   const [tipoReporte, setTipoReporte] = useState(TIPOS_REPORTE[0].value)
   const [carroId, setCarroId] = useState('')
   const [email, setEmail] = useState('')
@@ -119,7 +121,7 @@ export default function ConfiguracionCorreos() {
             <label>
               Categoría
               <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
-                {CATEGORIAS.map((c) => (
+                {categorias.map((c) => (
                   <option key={c.value} value={c.value}>
                     {c.label}
                   </option>
@@ -183,7 +185,7 @@ export default function ConfiguracionCorreos() {
             <tbody>
               {deLevantamientos.map((f) => (
                 <tr key={f.id}>
-                  <td>{etiquetaDe(CATEGORIAS, f.categoria)}</td>
+                  <td>{etiquetaDe(categorias, f.categoria)}</td>
                   <td>{f.carros?.codigo ?? 'Todos'}</td>
                   <td>{f.email}</td>
                   <td>

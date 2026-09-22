@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useCatalogos } from '../lib/CatalogosContext'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { ESTADOS, ESTADOS_CERRADOS, PRIORIDADES, etiquetaDe, colorDe } from '../lib/constants'
+import { ESTADOS, ESTADOS_CERRADOS, etiquetaDe, colorDe } from '../lib/constants'
 import Badge from '../components/Badge'
 
 export default function MisTareas() {
   const { session } = useAuth()
+  const { prioridades } = useCatalogos()
   const [levantamientos, setLevantamientos] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
@@ -61,8 +63,8 @@ export default function MisTareas() {
               <div className="tarjeta-badges">
                 <Badge texto={etiquetaDe(ESTADOS, l.estado)} color={colorDe(ESTADOS, l.estado)} />
                 <Badge
-                  texto={etiquetaDe(PRIORIDADES, l.prioridad)}
-                  color={colorDe(PRIORIDADES, l.prioridad)}
+                  texto={etiquetaDe(prioridades, l.prioridad)}
+                  color={colorDe(prioridades, l.prioridad)}
                 />
                 {l.carros?.codigo && <Badge texto={l.carros.codigo} color="#34495e" />}
                 {l.asignado_a === session?.user?.id && (

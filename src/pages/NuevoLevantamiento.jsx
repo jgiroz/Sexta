@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase, BUCKET_FOTOS } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { CATEGORIAS, SUBCATEGORIAS_CARRO } from '../lib/constants'
+import { SUBCATEGORIAS_CARRO } from '../lib/constants'
+import { useCatalogos } from '../lib/CatalogosContext'
 import { comprimirImagen } from '../lib/imagen'
 
 export default function NuevoLevantamiento() {
   const { session, esCuartelero } = useAuth()
+  const { categorias, prioridades } = useCatalogos()
   const navigate = useNavigate()
   const [carros, setCarros] = useState([])
   const [personal, setPersonal] = useState([])
@@ -25,7 +27,11 @@ export default function NuevoLevantamiento() {
   const inputCamaraRef = useRef(null)
   const inputGaleriaRef = useRef(null)
 
-  const esCarro = categoria === 'carro'
+  // El comportamiento ya no está atado a la categoría "carro": cada
+  // categoría define si pide carro y si pide tipo de material.
+  const catActual = categorias.find((c) => c.value === categoria)
+  const pideCarro = catActual?.pideCarro ?? categoria === 'carro'
+  const pideSubcategoria = catActual?.pideSubcategoria ?? categoria === 'carro'
 
   useEffect(() => {
     supabase
@@ -50,9 +56,9 @@ export default function NuevoLevantamiento() {
 
   const cambiarCategoria = (valor) => {
     setCategoria(valor)
-    if (valor !== 'carro') {
-      setSubcategoria('')
-    }
+    // Si la categoría elegida no pide tipo de material, se limpia.
+    const nueva = categorias.find((c) => c.value === valor)
+    if (!nueva?.pideSubcategoria) setSubcategoria('')
   }
 
   const elegirFoto = async (e) => {
@@ -74,8 +80,8 @@ export default function NuevoLevantamiento() {
     e.preventDefault()
     setError('')
 
-    if (esCarro && !carroId) {
-      setError('Selecciona el carro cuando la categoría es "Carro bomba".')
+    if (pideCarro && !carroId) {
+      setError(`Selecciona el carro cuando la categoría es "${catActual?.label ?? categoria}".`)
       return
     }
 
@@ -105,7 +111,7 @@ export default function NuevoLevantamiento() {
           titulo,
           descripcion,
           categoria,
-          subcategoria: esCarro && subcategoria ? subcategoria : null,
+          subcategoria: pideSubcategoria && subcategoria ? subcategoria : null,
           carro_id: carroId || null,
           ubicacion,
           prioridad,
@@ -174,7 +180,7 @@ export default function NuevoLevantamiento() {
         <label>
           Categoría
           <select value={categoria} onChange={(e) => cambiarCategoria(e.target.value)}>
-            {CATEGORIAS.map((c) => (
+            {categorias.map((c) => (
               <option key={c.value} value={c.value}>
                 {c.label}
               </option>
@@ -183,9 +189,9 @@ export default function NuevoLevantamiento() {
         </label>
 
         <label>
-          {esCarro ? 'Carro' : 'Carro relacionado (opcional)'}
+          {pideCarro ? 'Carro' : 'Carro relacionado (opcional)'}
           <select value={carroId} onChange={(e) => setCarroId(e.target.value)}>
-            <option value="">{esCarro ? '— Selecciona el carro —' : '— No aplica —'}</option>
+            <option value="">{pideCarro ? '— Selecciona el carro —' : '— No aplica —'}</option>
             {carros.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.nombre ? `${c.codigo} — ${c.nombre}` : c.codigo}
@@ -194,7 +200,7 @@ export default function NuevoLevantamiento() {
           </select>
         </label>
 
-        {esCarro && (
+        {pideSubcategoria && (
           <label>
             Tipo de material (opcional)
             <select value={subcategoria} onChange={(e) => setSubcategoria(e.target.value)}>
@@ -211,10 +217,11 @@ export default function NuevoLevantamiento() {
         <label>
           Prioridad
           <select value={prioridad} onChange={(e) => setPrioridad(e.target.value)}>
-            <option value="baja">Baja</option>
-            <option value="media">Media</option>
-            <option value="alta">Alta</option>
-            <option value="urgente">Urgente</option>
+            {prioridades.map((p) => (
+              <option key={p.value} value={p.value}>
+                {p.label}
+              </option>
+            ))}
           </select>
         </label>
 

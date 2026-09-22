@@ -1,14 +1,16 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useCatalogos } from '../lib/CatalogosContext'
 import { supabase, BUCKET_FACTURAS } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { CATEGORIAS, SUBCATEGORIAS_CARRO, ESTADOS, PRIORIDADES, etiquetaDe, colorDe } from '../lib/constants'
+import { SUBCATEGORIAS_CARRO, ESTADOS, etiquetaDe, colorDe } from '../lib/constants'
 import Badge from '../components/Badge'
 
 export default function DetalleLevantamiento() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { session, puedeGestionar } = useAuth()
+  const { categorias, prioridades } = useCatalogos()
 
   const [item, setItem] = useState(null)
   const [comentarios, setComentarios] = useState([])
@@ -164,8 +166,8 @@ export default function DetalleLevantamiento() {
 
       <div className="tarjeta-badges" style={{ marginTop: '0.75rem' }}>
         <Badge texto={etiquetaDe(ESTADOS, item.estado)} color={colorDe(ESTADOS, item.estado)} />
-        <Badge texto={etiquetaDe(PRIORIDADES, item.prioridad)} color={colorDe(PRIORIDADES, item.prioridad)} />
-        <Badge texto={etiquetaDe(CATEGORIAS, item.categoria)} color="#34495e" />
+        <Badge texto={etiquetaDe(prioridades, item.prioridad)} color={colorDe(prioridades, item.prioridad)} />
+        <Badge texto={etiquetaDe(categorias, item.categoria)} color="#34495e" />
         {item.subcategoria && (
           <Badge texto={etiquetaDe(SUBCATEGORIAS_CARRO, item.subcategoria)} color="#16a085" />
         )}
